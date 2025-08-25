@@ -1,0 +1,69 @@
+import axios from "axios";
+import { ACCESS_TOKEN } from "../utils/constants";
+import Cookies from 'js-cookie';
+
+const BASE_URL = "http://localhost:5000";
+const BASE_PATH = `${BASE_URL}/api/v1`;
+
+const api = axios.create({
+    baseURL: BASE_PATH,
+});
+
+api.interceptors.request.use((config) => {
+    const token = Cookies.get(ACCESS_TOKEN);
+    if (token) {
+        config.headers.Authorization = `Bearer ${token}`
+    }
+    return config;
+});
+
+export const login = async (email: string, password: string) => {
+    try {
+        const res = await api.post('/users/login', { email, password }, {});
+        return res.data;
+    } catch (e) {
+        throw new Error("Login failed");
+    }
+}
+
+export const register = async (params: {
+    firstName: string,
+    lastName: string,
+    email: string,
+    password: string,
+}) => {
+    try {
+        const res = await api.post('/users/register', params, {});
+        return res.data;
+    } catch (e) {
+        throw new Error("Registration failed");
+    }
+}
+
+export const me = async () => {
+    try {
+        const res = await api.get('/me');
+        return res.data;
+    } catch (e) {
+        throw new Error("Failed to fetch me");
+    }
+}
+
+export const fetchTask = async () => {
+    try {
+        const res = await api.get('/tasks');
+        return res.data;
+    } catch (e) {
+        throw new Error("Failed to fetch task");
+    }
+}
+
+export const searchTask = async (query: string) => {
+    if (!query) return [];
+    try {
+        const res = await api.get(`/tasks/search?search=${query}`);
+        return res.data;
+    } catch (e) {
+        throw new Error("Failed task look up");
+    }
+}
