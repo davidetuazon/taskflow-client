@@ -36,9 +36,9 @@ export default function OverdueCard(props: Props) {
                     padding: 0,
                     margin: 0,
                 }}
-                textStyle={{ color: colors.textSecondary }}
+                textStyle={{ color: colors.textSecondary, textAlign: 'start' }}
             >
-                Overdue:
+                Overdue
             </Text>
             <Text
                 variant={ isBigScreen ? "title" : "subtitle" }
@@ -46,7 +46,7 @@ export default function OverdueCard(props: Props) {
                     padding: 0,
                     margin: 0,
                 }}
-                textStyle={{ color: 'red' }}
+                textStyle={{ color: 'red', textAlign: 'start' }}
             >
                 {count}
             </Text>
@@ -57,8 +57,9 @@ export default function OverdueCard(props: Props) {
 const styles: {[key: string]: React.CSSProperties} = {
     containerBigScreen: {
         border: '3px solid red',
-        padding: 30,
-        margin: 20,
+        padding: 20,
+        margin: '30px 20px',
+        minWidth: '120px'
     },
     container: {
         border: '3px solid red',

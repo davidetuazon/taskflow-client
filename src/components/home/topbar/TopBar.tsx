@@ -27,5 +27,6 @@ const styles: {[key: string]: React.CSSProperties} = {
         // border: '1px solid red',
         display: 'flex',
         flexDirection: 'row',
+        position: 'sticky'
     }
 }

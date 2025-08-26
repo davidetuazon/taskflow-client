@@ -32,9 +32,9 @@ export default function CompletedCard(props: Props) {
                     padding: 0,
                     margin: 0,
                 }}
-                textStyle={{ color: colors.textSecondary }}
+                textStyle={{ color: colors.textSecondary, textAlign: 'start' }}
             >
-                Completed: 
+                Completed
             </Text>
             <Text
                 variant={ isBigScreen ? "title" : "subtitle" }
@@ -42,7 +42,7 @@ export default function CompletedCard(props: Props) {
                     padding: 0,
                     margin: 0,
                 }}
-                textStyle={{ color: colors.accent }}
+                textStyle={{ color: colors.accent, textAlign: 'start' }}
             >
                 {count}
             </Text>
@@ -53,8 +53,9 @@ export default function CompletedCard(props: Props) {
 const styles: {[key: string]: React.CSSProperties} = {
     containerBigScreen: {
         border: `3px solid ${colors.accent}`,
-        padding: 30,
-        margin: 20,
+        padding: 20,
+        margin: '30px 20px',
+        minWidth: '120px'
     },
     container: {
         border: `3px solid ${colors.accent}`,

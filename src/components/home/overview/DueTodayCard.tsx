@@ -41,9 +41,9 @@ export default function DueTodayCard(props: Props) {
                     padding: 0,
                     margin: 0,
                 }}
-                textStyle={{ color: colors.textSecondary }}
+                textStyle={{ color: colors.textSecondary, textAlign: 'start' }}
             >
-                Due Today: 
+                Due Today
             </Text>
             <Text
                 variant={ isBigScreen ? "title" : "subtitle" }
@@ -51,7 +51,7 @@ export default function DueTodayCard(props: Props) {
                     padding: 0,
                     margin: 0,
                 }}
-                textStyle={{ color: colors.primary }}
+                textStyle={{ color: colors.primary, textAlign: 'start' }}
             >
                 {count}
             </Text>
@@ -62,8 +62,9 @@ export default function DueTodayCard(props: Props) {
 const styles: {[key: string]: React.CSSProperties} = {
     containerBigScreen: {
         border: `3px solid ${colors.primary}`,
-        padding: 30,
-        margin: 20,
+        padding: 20,
+        margin: '30px 20px',
+        minWidth: '120px'
     },
     container: {
         border: `3px solid ${colors.primary}`,

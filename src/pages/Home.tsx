@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { me } from "../services/api";
 import { useMediaQuery } from "react-responsive";
 import { useAuth } from "../providers/AuthProvider";
+import colors from "../constants/colors";
 
 import TopBar from "../components/home/topbar/TopBar";
 import OverviewGrid from "../components/home/overview/OverviewGrid";
@@ -46,8 +47,13 @@ const styles: {[key: string]: React.CSSProperties} = {
     },
     header: {
         // border: '1px solid red',
+        backgroundColor: colors.background,
         width: '100%',
-        paddingTop: 5, paddingBottom: 5,
+        paddingTop: 5,
+        paddingBottom: 5,
+        // boxShadow: '0 1px 3px rgba(0,0,0,0.08)',
         // overflow: 'hidden',
+        // position: 'sticky',
+        // top: 0,
     },
 }

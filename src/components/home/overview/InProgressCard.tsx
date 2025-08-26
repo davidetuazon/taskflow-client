@@ -18,7 +18,7 @@ export default function InProgressCard(props: Props) {
         const res = await fetchTask();
         const inProgressCount = res.docs.filter((task: any) => {
             const due = new Date(task.dueDate).getTime();
-            return due > Date.now() && task.status === 'in-progress';
+            return due > Date.now() && (task.status === 'in-progress' || task.status === 'todo');
         }).length;
         setCount(inProgressCount);
     };
@@ -35,9 +35,9 @@ export default function InProgressCard(props: Props) {
                     padding: 0,
                     margin: 0,
                 }}
-                textStyle={{ color: colors.textSecondary }}
+                textStyle={{ color: colors.textSecondary, textAlign: 'start' }}
             >
-                In-Progress: 
+                In-Progress
             </Text>
             <Text
                 variant={ isBigScreen ? "title" : "subtitle" }
@@ -45,7 +45,7 @@ export default function InProgressCard(props: Props) {
                     padding: 0,
                     margin: 0,
                 }}
-                textStyle={{ color: colors.secondary }}
+                textStyle={{ color: colors.secondary, textAlign: 'start' }}
             >
                 {count}
             </Text>
@@ -56,8 +56,9 @@ export default function InProgressCard(props: Props) {
 const styles: {[key: string]: React.CSSProperties} = {
     containerBigScreen: {
         border: `3px solid ${colors.secondary}`,
-        padding: 30,
-        margin: 20,
+        padding: 20,
+        margin: '30px 20px',
+        minWidth: '120px'
     },
     container: {
         border: `3px solid ${colors.secondary}`,
