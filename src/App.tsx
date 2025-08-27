@@ -14,6 +14,7 @@ import { ACCESS_TOKEN } from './utils/constants';
 import Login from './pages/Login';
 import Home from './pages/Home';
 import Register from './pages/Register';
+import Account from './pages/Account';
 
 
 function App() {
@@ -32,7 +33,14 @@ function App() {
               </RequireAuth>
             }
           />
-
+          <Route
+            path='/account/settings/:id'
+            element={
+              <RequireAuth>
+                <Account />
+              </RequireAuth>
+            }
+          />
         </Routes>
       </AuthProvider>
     </BrowserRouter>

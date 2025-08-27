@@ -7,9 +7,9 @@ import FilterOption from "./FilterOption";
 
 type Props = {
     style?: React.CSSProperties,
-    SortByDate: () => void;
-    SortByDefault: () => void;
-    SortByStatus: () => void;
+    SortTasks: () => void;
+    FilterTasks: () => void;
+    FilterState: any,
 }
 
 export default function GridHeader(props: Props) {
@@ -26,10 +26,11 @@ export default function GridHeader(props: Props) {
                 {isBigScreen && (
                     <>
                         <FilterOption
+                            FilterTasks={props.FilterTasks}
+                            FilterState={props.FilterState}
                         />
                         <SortOption
-                            DueDateSort={props.SortByDate}
-                            DefaultSort={props.SortByDefault}
+                            SortTasks={props.SortTasks}
                         />
                     </>
                     

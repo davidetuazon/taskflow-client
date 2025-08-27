@@ -14,17 +14,22 @@ type Props = {
     style?: React.CSSProperties,
 }
 
-type SortOption = 'default' | 'dueDate' | 'status';
+type SortOption = 'default' | 'dueDate';
+type filterOption = 'status' | 'todo' | 'in-progress' | 'done';
+const filterCycle: filterOption[] = ['status', 'todo', 'in-progress', 'done'];
+
 
 export default function MainGrid(props: Props) {
     const isBigScreen = useMediaQuery({ minWidth: 769 });
     const [task, setTask] = useState<any[]>([]);
-    const [originalTask, setOriginalTask] = useState<any[]>([]); // keep original
-    const [sortState, setSortState] = useState<SortOption>('default');
+    const [originalTask, setOriginalTask] = useState<any[]>([]);    // keep original
+    const [sortState, setSortState] = useState<SortOption>('dueDate');
+    const [filterState, setFilterState] = useState<filterOption>('status');
 
     const init = async() => {
         try {
             const res = await fetchTask();
+
             setTask(res.docs);
             setOriginalTask(res.docs);
         } catch (e) {
@@ -32,52 +37,57 @@ export default function MainGrid(props: Props) {
         }
     }
 
-    const statusOrder: Record<string, number> = {
-        'todo': 1,
-        'in-progress': 2,
-        'done': 3
-    };
-
-    const applySort = (option: SortOption) => {
-        if (option === "default") {
-            setTask(originalTask);
-            setSortState("default");
-            return;
-        }
-
-        if (sortState === option) {
-            setTask(originalTask);
-            setSortState("default");
-        } else {
-            const sorted = [...task];
-
-            if (option === "dueDate") {
-                sorted.sort((a, b) => new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime());
-            }
-            setTask(sorted);
-            setSortState(option);
-        }
-    };
-
     useEffect(() => {
         init();
     }, []);
+    
+    const recomputeTask = (filter: filterOption, sort: SortOption) => {
+        let newTasks = [...originalTask];
+
+        if (filter !== 'status') {
+            newTasks = newTasks.filter((task: any) => task.status === filter);
+        }
+
+        if (sort !== 'dueDate') {
+            newTasks.sort((a, b) => new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime());
+        }
+
+        setTask(newTasks);
+    }
+
+    const applySort = () => {
+        const nextSort = sortState === 'default' ? 'dueDate' : 'default';
+        setSortState(nextSort);
+        recomputeTask(filterState, nextSort);
+    }
+
+    const applyFilter = () => {
+        const currIdx = filterCycle.indexOf(filterState);
+        const nextIdx = (currIdx + 1) % filterCycle.length;
+        const nextFilter = filterCycle[nextIdx];
+        
+        setFilterState(nextFilter);
+        recomputeTask(nextFilter, sortState);
+    }
 
     return (
         <div style={isBigScreen ? styles.containerBigScreen : styles.container} >
             <div style={styles.mainCard}>
                 <div style={styles.header}>
                     <GridHeader
-                        SortByDate={() => applySort("dueDate")}
-                        SortByDefault={() => applySort("default")}
-                        SortByStatus={() => applySort("status")}
+                        SortTasks={applySort}
+                        FilterTasks={applyFilter}
+                        FilterState={filterState}
                     />
                 </div>
                 {!isBigScreen && (
                         <div style={styles.filterSort}>
+                            <FilterOption
+                                FilterTasks={applyFilter}
+                                FilterState={filterState}
+                            />
                             <SortOption
-                                DueDateSort={() => applySort("dueDate")}
-                                DefaultSort={() => applySort("default")}
+                                SortTasks={applySort}
                                 style={{
                                     // border: '1px solid red',
                                     backgroundColor: colors.background,
@@ -98,6 +108,7 @@ export default function MainGrid(props: Props) {
                                 Description={t.description}
                                 Status={t.status}
                                 DueDate={t.dueDate}
+                                TaskID={t._id}
                             />
                         </div>
                     ))}
@@ -135,7 +146,7 @@ const styles: {[key: string]: React.CSSProperties} = {
     },
     header: {
         // border: '2px solid red',
-        borderBottom: `3px solid ${colors.border}`,
+        borderBottom: `3px solid ${colors.darkBorder}`,
         display: 'flex',
         flexDirection: 'row',
         justifyContent: 'flex-start',
@@ -147,15 +158,16 @@ const styles: {[key: string]: React.CSSProperties} = {
         flexWrap: 'wrap',
         flexDirection: 'row',
         justifyContent: 'center',
-        gap: 30,
+        gap: 40,
         padding: '30px 10px',
     },
     taskCard: {
         // border: '1px solid red',
         display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'flex-start',
-        gap: 30,
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        justifyContent: 'center',
+        gap: 40,
         padding: '30px 10px',
         overflowY: 'auto',
     },

@@ -4,12 +4,14 @@ import TextInput from "../../commons/TextInputs";
 import Button from "../../commons/Button";
 import colors from "../../../constants/colors";
 import typography from "../../../constants/typography";
+import { useMediaQuery } from "react-responsive";
 
 type Props = {
     style?: React.CSSProperties,
 }
 
 export default function TopBarMid(props: Props) {
+    const isBigScreen = useMediaQuery({ minWidth: 769 });
     const [query, setQuery] = useState<string>('');
     const [results, setResults] = useState<any[]>([]);
     
@@ -42,6 +44,7 @@ export default function TopBarMid(props: Props) {
                     value: query,
                     onChange: (e: React.ChangeEvent<HTMLInputElement>) => setQuery(e.target.value),
                 }}
+                textStyle={{ fontSize: isBigScreen ? typography.subtitle : typography.caption }}
             />
 
             {(results?.length ?? 0) > 0 && (

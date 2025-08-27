@@ -1,6 +1,6 @@
 import React, { useCallback } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
-import { throttle } from "lodash";
+import { first, throttle } from "lodash";
 import { useNavigate } from "react-router-dom";
 import colors from "../constants/colors";
 import TaskFlow from '../assets/TaskFlowV2.svg';
@@ -13,6 +13,7 @@ import Button from "../components/commons/Button";
 import Container from "../components/commons/Container";
 
 type Inputs = {
+    fullName: string,
     firstName: string,
     lastName: string,
     email: string,
@@ -25,8 +26,21 @@ export default function Register() {
     const navigate = useNavigate();
 
     const onSubmit: SubmitHandler<Inputs> = useCallback(throttle(async (data) => {
+        const payload: {
+            fullName: string,
+            firstName: string,
+            lastName: string,
+            email: string,
+            password: string,
+        } = {
+            fullName: `${data.firstName} ${data.lastName}`,
+            firstName: data.firstName,
+            lastName: data.lastName,
+            email: data.email,
+            password: data.password
+        }
         try {
-            await registerUser(data);
+            await registerUser(payload);
             navigate('/login');
         } catch (e) {
             console.error({ message: e });

@@ -8,6 +8,7 @@ const colors = {
     textPrimary: '#111827',   // Gray 900 – main text
     textSecondary: '#6B7280', // Gray 500 – subtitles, muted text
     border: '#E5E7EB',
+    darkBorder: '#D1D5DB',
 }
 
 export default colors;

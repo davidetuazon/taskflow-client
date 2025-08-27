@@ -7,6 +7,7 @@ import OverdueCard from "./OverdueCard";
 
 import { useAuth } from "../../../providers/AuthProvider";
 import { useMediaQuery } from "react-responsive";
+import TopBarMid from "../topbar/TopBarMid";
 
 type Props = {
     style?: React.CSSProperties,
@@ -22,17 +23,17 @@ export default function OverviewGrid(props: Props) {
             <div style={{
                 ...styles.greetings,
                 paddingTop: isBigScreen ? 30 : 5,
-                paddingLeft: isBigScreen ? 20 : 5,
+                paddingLeft: 20
                 }}
             >
                 <Text
-                    variant="title"
+                    variant={isBigScreen ? "heading" : "title"}
                     style={{ padding: 0, margin: 0, }}
                 >
                     Welcome back, {user?.firstName}!
                 </Text>
                 <Text
-                    variant="subtitle"
+                    variant={isBigScreen ? "title" : "subtitle"}
                     style={{ padding: 0, margin: 0, }}
                 >
                     Here's what's on your plate today.
@@ -54,6 +55,10 @@ const styles: {[key: string]: React.CSSProperties} = {
         width: '100%',
         display: 'flex',
         flexDirection: 'row',
+    },
+    topbarMid: {
+        // border: '1px solid red',
+        padding: '0px 20px',
     },
     greetings: {
         // border: '1px solid red',
