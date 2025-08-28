@@ -5,6 +5,7 @@ import { useMediaQuery } from "react-responsive";
 import Cookies from 'js-cookie';
 import { ACCESS_TOKEN } from "../../utils/constants";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../providers/AuthProvider";
 
 import Button from "../commons/Button";
 import TextInput from "../commons/TextInputs";
@@ -13,18 +14,22 @@ import Text from "../commons/Text";
 
 export default function InputsCard() {
     const isBigScreen = useMediaQuery({ minWidth: 769 });
-    const navigate = useNavigate()
+    const navigate = useNavigate();
+    const { setUser } = useAuth();
 
     const handleOnSignOut = () => {
         Cookies.remove(ACCESS_TOKEN);
+        setUser(null);
         navigate('/');
     }
     
     return (
         <div style={styles.container}>
             <div style={styles.body}>
-                <Text variant="title">
-                    This page is still under construction. Check back soon for improvement and updates!
+                <Text variant="title" textStyle={{ color: colors.textSecondary}}>
+                    This section will get an update soon... Hang tight! :D
+                    <br />
+                    If you'd want to sign out, click the button below.
                 </Text>
             </div>
             <div style={styles.footer}>
@@ -46,7 +51,7 @@ export default function InputsCard() {
 
 const styles: {[key: string]: React.CSSProperties} = {
      container: {
-        // border: '1px solid red',
+        border: '1px solid red',
         display: 'flex',
         flexDirection: 'column',
         flex: 1,
@@ -60,7 +65,7 @@ const styles: {[key: string]: React.CSSProperties} = {
         textAlign: 'center',
     },
     footer: {
-        borderTop: `4px solid ${colors.darkBorder}`,
+        borderTop: `4px solid ${colors.textSecondary}`,
         width: '90%',
         justifyItems: 'center',
     },

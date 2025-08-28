@@ -9,20 +9,20 @@ import Container from "../../commons/Container";
 
 type Props = {
     style?: React.CSSProperties,
+    Task: any,
 }
 
 export default function DueTodayCard(props: Props) {
     const isBigScreen = useMediaQuery({ minWidth: 769 });
     const [count, setCount] = useState(0);
 
-    const init = async () => {
-        const res = await fetchTask();
+    const init = () => {
 
         const now = new Date();
         const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
         const endOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59, 999).getTime();
 
-        const dueTodayCount = res.docs.filter((task: any) => {
+        const dueTodayCount = props.Task.filter((task: any) => {
             const due = new Date(task.dueDate).getTime();
             return due >= startOfToday && due <= endOfToday && task.status !== 'done';
         }).length;
@@ -31,7 +31,7 @@ export default function DueTodayCard(props: Props) {
 
     useEffect(() => {
         init();
-    }, []);
+    }, [props.Task]);
 
     return (
         <Container style={isBigScreen ? styles.containerBigScreen : styles.container}>

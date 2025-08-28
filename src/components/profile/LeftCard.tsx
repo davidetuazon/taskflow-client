@@ -18,7 +18,7 @@ export default function LeftCard() {
                 style={{
                     ...styles.category,
                     border: active === 'profile' ?
-                    `4px solid ${colors.darkBorder}` :
+                    `4px solid ${colors.textSecondary}` :
                     `4px solid ${colors.surface}`
                 }}
                 titleStyle={{
@@ -34,7 +34,7 @@ export default function LeftCard() {
                 style={{
                     ...styles.category,
                     border: active === 'account' ?
-                    `4px solid ${colors.darkBorder}` :
+                    `4px solid ${colors.textSecondary}` :
                     `4px solid ${colors.surface}`
                 }}
                 titleStyle={{

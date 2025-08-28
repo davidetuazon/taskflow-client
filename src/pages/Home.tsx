@@ -11,11 +11,15 @@ import MainGrid from "../components/home/maingrid/MainGrid";
 export default function Home() {
     const isBigScreen = useMediaQuery({ minWidth: 768 });
     const { user, setUser } = useAuth();
+    const [task, setTask] = useState<any[]>([]);
 
     const init = async () => {
         try {
             const loggedUser = await me();
             setUser(loggedUser);
+            
+            const res = await fetchTask();
+            setTask(res.docs);
         } catch (e) {
             console.error("Failed to fetch user data", e);
         }
@@ -32,11 +36,12 @@ export default function Home() {
                 <TopBar />
             </div>
             <OverviewGrid
+                Task={task}
                 style={{
                     flexDirection: isBigScreen ? 'row' : 'column'
                 }}
             />
-            <MainGrid />
+            <MainGrid task={task} setTask={setTask} />
         </div>
     );
 }

@@ -8,9 +8,11 @@ import TextInput from "../../commons/TextInputs";
 import Button from "../../commons/Button";
 import PopUpModal from "../../commons/PopUpModal";
 import Container from "../../commons/Container";
+import EditTasKModal from "./EditTaskModal";
 
 type Props = {
     style?: React.CSSProperties,
+    Title: string,
     IsOpen: boolean,
     OnClose: () => void,
     MarkAsDone: (taskId: string) => void,
@@ -26,12 +28,18 @@ export default function TaskModal(props: Props) {
             <PopUpModal
                 isOpen={props.IsOpen}
                 onClose={props.OnClose}
-                containerStyle={styles.container}
+                containerStyle={{...styles.container, border: `6px solid ${colors.accent}`}}
             >
-                <Text variant="title">
-                    Mark this task as done?
+                <Text variant="title" style={styles.text}>
+                    Mark "{props.Title}" as done?
                 </Text>
                 <div style={styles.footer}>
+                    <Button 
+                        title="No"
+                        onButtonPress={props.OnClose}
+                        style={styles.noButton}
+                        titleStyle={{ fontSize: typography.title, color: colors.textSecondary }}
+                    />
                     <Button 
                         title="Yes"
                         onButtonPress={() => {
@@ -42,12 +50,6 @@ export default function TaskModal(props: Props) {
                         style={styles.yesButton}
                         titleStyle={{ fontSize: typography.title,  color: colors.accent }}
                     />
-                    <Button 
-                        title="No"
-                        onButtonPress={props.OnClose}
-                        style={styles.noButton}
-                        titleStyle={{ fontSize: typography.title, color: 'red' }}
-                    />
                 </div>
             </PopUpModal>
         );
@@ -55,11 +57,7 @@ export default function TaskModal(props: Props) {
 
     if (location.pathname.endsWith('edit')) {
         return (
-            <PopUpModal isOpen={props.IsOpen} onClose={props.OnClose}>
-                <Text variant="title">
-                    {id}
-                </Text>
-            </PopUpModal>
+            <EditTasKModal Title={props.Title} IsOpen={props.IsOpen} OnClose={props.OnClose} />
         );
     }
 
@@ -68,12 +66,18 @@ export default function TaskModal(props: Props) {
             <PopUpModal
                 isOpen={props.IsOpen}
                 onClose={props.OnClose}
-                containerStyle={styles.container}
+                containerStyle={{...styles.container, border: '6px solid red'}}
             >
-                <Text variant="title">
-                    Are you sure you want to delete this task?
+                <Text variant="title" style={styles.text}>
+                    This will delete "{props.Title}". Are you sure?
                 </Text>
                 <div style={styles.footer}>
+                    <Button 
+                        title="No"
+                        onButtonPress={props.OnClose}
+                        style={styles.noButton}
+                        titleStyle={{ fontSize: typography.title, color: colors.textSecondary }}
+                    />
                     <Button 
                         title="Yes"
                         onButtonPress={() => {
@@ -82,13 +86,7 @@ export default function TaskModal(props: Props) {
                             props.OnClose();
                         }}
                         style={styles.yesButton}
-                        titleStyle={{ fontSize: typography.title,  color: colors.accent }}
-                    />
-                    <Button 
-                        title="No"
-                        onButtonPress={props.OnClose}
-                        style={styles.noButton}
-                        titleStyle={{ fontSize: typography.title, color: 'red' }}
+                        titleStyle={{ fontSize: typography.title,  color: 'red' }}
                     />
                 </div>
             </PopUpModal>
@@ -101,18 +99,24 @@ const styles: {[key: string]: React.CSSProperties} = {
         backgroundColor: colors.background,
         padding: 20,
         margin: 30,
-        border: `4px solid ${colors.darkBorder}`
+        borderRadius: '23px',
+        minWidth: '300px',
+        maxWidth: '450px',
     },
+    text: {
+        // border: '1px solid red',
+        padding: '30px 20px',
+    }, 
     footer: {
         // border: '1px solid red',
-        padding: 0,
+        paddingTop: 20,
         display: 'flex',
         flexDirection: 'row',
-        justifyContent: 'center',
-        gap: 30,
+        justifyContent: 'space-around',
+        // gap: 20,
     },
     yesButton: {
-        border: `4px solid ${colors.surface}`,
+        border: `4px solid ${colors.darkBorder}`,
         width: 'auto',
         padding: '20px 30px',
         backgroundColor: colors.border,

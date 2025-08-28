@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { SetStateAction, useEffect, useState } from "react";
 import { useAuth } from "../../../providers/AuthProvider";
 import { useMediaQuery } from "react-responsive";
 import colors from "../../../constants/colors";
@@ -9,9 +9,10 @@ import GridHeader from "./GridHeader";
 import SortOption from "./SortOption";
 import FilterOption from "./FilterOption";
 
-
 type Props = {
     style?: React.CSSProperties,
+    task: any,
+    setTask: React.Dispatch<React.SetStateAction<any[]>>,
 }
 
 type SortOption = 'default' | 'dueDate';
@@ -20,29 +21,15 @@ const filterCycle: filterOption[] = ['status', 'todo', 'in-progress', 'done'];
 
 
 export default function MainGrid(props: Props) {
+    const { task, setTask } = props;
     const isBigScreen = useMediaQuery({ minWidth: 769 });
-    const [task, setTask] = useState<any[]>([]);
-    const [originalTask, setOriginalTask] = useState<any[]>([]);    // keep original
+    // const [task, setTask] = useState<any[]>([]);
+    // const [originalTask, setOriginalTask] = useState<any[]>([]);
     const [sortState, setSortState] = useState<SortOption>('dueDate');
     const [filterState, setFilterState] = useState<filterOption>('status');
-
-    const init = async() => {
-        try {
-            const res = await fetchTask();
-
-            setTask(res.docs);
-            setOriginalTask(res.docs);
-        } catch (e) {
-            console.error("Failed to fetch task: ", e);
-        }
-    }
-
-    useEffect(() => {
-        init();
-    }, []);
     
     const recomputeTask = (filter: filterOption, sort: SortOption) => {
-        let newTasks = [...originalTask];
+        let newTasks = [...task];
 
         if (filter !== 'status') {
             newTasks = newTasks.filter((task: any) => task.status === filter);
@@ -51,8 +38,7 @@ export default function MainGrid(props: Props) {
         if (sort !== 'dueDate') {
             newTasks.sort((a, b) => new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime());
         }
-
-        setTask(newTasks);
+        return newTasks;
     }
 
     const applySort = () => {
@@ -71,25 +57,32 @@ export default function MainGrid(props: Props) {
     }
 
     const markAsDone = async (taskId: string) => {
-        const payload = {
-            status: 'done'
-        };
+        const prevTask = [...task];
+        setTask(prev => prev.map(t => t._id === taskId ? { ...t, status: 'done' } : t ));
+
+        const payload = { status: 'done' };
         try {
             await markTaskDone(taskId, payload);
-            await init();
         } catch (e) {
             console.error("Failed to update task status", e);
+            setTask(prevTask);
         }
     }
 
     const DeleteTask = async (taskId: string) => {
+        const prevTask = [...task];
+        setTask(prev => prev.map(t => t._id !== taskId));
+
         try {
             await deleteTask(taskId);
-            await init();
         } catch (e) {
             console.error("Failed to delete task", e);
+            setTask(prevTask);
         }
     }
+
+      // derive tasks each render instead of storing copies
+    const displayTasks = recomputeTask(filterState, sortState);
 
     return (
         <div style={isBigScreen ? styles.containerBigScreen : styles.container} >
@@ -121,7 +114,7 @@ export default function MainGrid(props: Props) {
                         </div>
                     )}
                 <div style={isBigScreen ? styles.taskCardBigScreen : styles.taskCard}>
-                    {task.map((t: any) => (
+                    {displayTasks.map((t: any) => (
                         <div key={t._id}>
                             <TaskCard
                                 Title={t.title}

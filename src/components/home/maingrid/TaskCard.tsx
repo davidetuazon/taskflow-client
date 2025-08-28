@@ -92,6 +92,7 @@ export default function TaskCard(props: Props) {
                     onButtonPress={() => navigate(`/tasks/${TaskID}/delete`)}
                 />
                 <TaskModal
+                    Title={props.Title}
                     IsOpen={isModalOpen}
                     OnClose={() => navigate(-1)}
                     MarkAsDone={props.MarkAsDone}

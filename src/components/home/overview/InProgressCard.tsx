@@ -8,15 +8,16 @@ import Container from "../../commons/Container";
 
 type Props = {
     style?: React.CSSProperties,
+    Task: any,
 }
 
 export default function InProgressCard(props: Props) {
     const isBigScreen = useMediaQuery({ minWidth: 769 });
     const [count, setCount] = useState(0);
 
-    const init = async () => {
-        const res = await fetchTask();
-        const inProgressCount = res.docs.filter((task: any) => {
+    const init = () => {
+
+        const inProgressCount = props.Task.filter((task: any) => {
             const due = new Date(task.dueDate).getTime();
             return due > Date.now() && (task.status === 'in-progress' || task.status === 'todo');
         }).length;
@@ -25,7 +26,7 @@ export default function InProgressCard(props: Props) {
 
     useEffect(() => {
         init();   
-    }, []);
+    }, [props.Task]);
 
     return (
         <Container style={isBigScreen ? styles.containerBigScreen : styles.container}>

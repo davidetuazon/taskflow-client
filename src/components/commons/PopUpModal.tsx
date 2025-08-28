@@ -39,6 +39,7 @@ const styles: {[key: string]: React.CSSProperties} = {
         justifyContent: 'center',
         alignItems: 'center',
         overflow: 'hidden',
+        backdropFilter: 'blur(3px)',
     },
     container: {
         display: 'flex',

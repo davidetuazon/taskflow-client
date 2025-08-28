@@ -8,21 +8,21 @@ import Container from "../../commons/Container";
 
 type Props = {
     style?: React.CSSProperties,
+    Task: any,
 }
 
 export default function CompletedCard(props: Props) {
     const isBigScreen = useMediaQuery({ minWidth: 769 });
     const [count, setCount] = useState(0);
 
-    const init = async () => {
-        const res = await fetchTask();
-        const completedCount = res.docs.filter((task: any) => task.status === 'done').length;
+    const init = () => {
+        const completedCount = props.Task.filter((task: any) => task.status === 'done').length;
         setCount(completedCount);
     };
 
     useEffect(() => {
         init();
-    }, []);
+    }, [props.Task]);
 
     return (
         <Container style={isBigScreen ? styles.containerBigScreen : styles.container}>

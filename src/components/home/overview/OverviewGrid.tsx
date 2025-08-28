@@ -12,6 +12,7 @@ import TopBarMid from "../topbar/TopBarMid";
 type Props = {
     style?: React.CSSProperties,
     children?: any,
+    Task: any,
 }
 
 export default function OverviewGrid(props: Props) {
@@ -40,10 +41,10 @@ export default function OverviewGrid(props: Props) {
                 </Text>
             </div>
             <div style={isBigScreen ? styles.statsBigScreen : styles.stats}>
-                <DueTodayCard />
-                <InProgressCard />
-                <CompletedCard  />
-                <OverdueCard />
+                <DueTodayCard Task={props.Task} />
+                <InProgressCard Task={props.Task} />
+                <CompletedCard Task={props.Task} />
+                <OverdueCard Task={props.Task} />
             </div>
         </div>
     );
