@@ -1,39 +1,35 @@
-import React from "react";
+import React, { useState } from "react";
 import colors from "../../../constants/colors";
 import typography from "../../../constants/typography";
 import Container from "../../commons/Container";
 import Text from "../../commons/Text";
 import Button from "../../commons/Button";
+import TaskModal from "./TaskModal";
+import { useLocation, useNavigate } from "react-router-dom";
 
 type Props = {
-    Task: any,
     style?: React.CSSProperties,
     Title: string,
     Description: string,
     Status: string,
     DueDate: string,
     TaskID: string,
+    MarkAsDone: (taskId: string) => void,
+    DeleteTask: (taskId: string) => void,
 }
 
 export default function TaskCard(props: Props) {
-    const {
-        Title,
-        Description,
-        Status,
-        DueDate,
-        TaskID,
-    } = props;
+    const { Title, Description, Status, DueDate, TaskID, } = props;
+    const navigate = useNavigate();
+    const location = useLocation();
+
+    const isModalOpen =
+        location.pathname === `/tasks/${TaskID}/done` ||
+        location.pathname === `/tasks/${TaskID}/edit` ||
+        location.pathname === `/tasks/${TaskID}/delete`;
 
     const overDue = new Date(DueDate).getTime() > Date.now();
 
-    const handleOnDone = () => {
-        
-    }
-
-    const handleOnDelete = () => {
-        alert(TaskID);
-    }
-    
     return (
         <Container style={{
                     ...styles.container,
@@ -76,20 +72,30 @@ export default function TaskCard(props: Props) {
             <div style={styles.footer}>
                 <Button
                     title="Done"
-                    style={styles.button}
-                    titleStyle={{ color: colors.accent }}
-                    onButtonPress={handleOnDone}
+                    style={{
+                        ...styles.button,
+                        pointerEvents: Status === 'done' ? 'none' : 'auto'
+                    }}
+                    titleStyle={{ color: Status === 'done' ? colors.darkBorder : colors.accent }}
+                    onButtonPress={() => navigate(`/tasks/${TaskID}/done`)}
                 />
                 <Button
                     title="Edit"
                     style={styles.button}
                     titleStyle={{ color: colors.primary }}
+                    onButtonPress={() => navigate(`/tasks/${TaskID}/edit`)}
                 />
                 <Button
                     title="Delete"
                     style={styles.button}
                     titleStyle={{ color: 'red' }}
-                    onButtonPress={handleOnDelete}
+                    onButtonPress={() => navigate(`/tasks/${TaskID}/delete`)}
+                />
+                <TaskModal
+                    IsOpen={isModalOpen}
+                    OnClose={() => navigate(-1)}
+                    MarkAsDone={props.MarkAsDone}
+                    DeleteTask={props.DeleteTask}
                 />
             </div>
         </Container>

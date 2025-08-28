@@ -42,7 +42,7 @@ export default function OverviewGrid(props: Props) {
             <div style={isBigScreen ? styles.statsBigScreen : styles.stats}>
                 <DueTodayCard />
                 <InProgressCard />
-                <CompletedCard />
+                <CompletedCard  />
                 <OverdueCard />
             </div>
         </div>

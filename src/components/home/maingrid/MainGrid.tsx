@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useAuth } from "../../../providers/AuthProvider";
 import { useMediaQuery } from "react-responsive";
 import colors from "../../../constants/colors";
-import { fetchTask } from "../../../services/api";
+import { deleteTask, fetchTask, markTaskDone } from "../../../services/api";
 
 import TaskCard from "./TaskCard";
 import GridHeader from "./GridHeader";
@@ -70,6 +70,27 @@ export default function MainGrid(props: Props) {
         recomputeTask(nextFilter, sortState);
     }
 
+    const markAsDone = async (taskId: string) => {
+        const payload = {
+            status: 'done'
+        };
+        try {
+            await markTaskDone(taskId, payload);
+            await init();
+        } catch (e) {
+            console.error("Failed to update task status", e);
+        }
+    }
+
+    const DeleteTask = async (taskId: string) => {
+        try {
+            await deleteTask(taskId);
+            await init();
+        } catch (e) {
+            console.error("Failed to delete task", e);
+        }
+    }
+
     return (
         <div style={isBigScreen ? styles.containerBigScreen : styles.container} >
             <div style={styles.mainCard}>
@@ -103,12 +124,13 @@ export default function MainGrid(props: Props) {
                     {task.map((t: any) => (
                         <div key={t._id}>
                             <TaskCard
-                                Task={task}
                                 Title={t.title}
                                 Description={t.description}
                                 Status={t.status}
                                 DueDate={t.dueDate}
                                 TaskID={t._id}
+                                MarkAsDone={markAsDone}
+                                DeleteTask={DeleteTask}
                             />
                         </div>
                     ))}

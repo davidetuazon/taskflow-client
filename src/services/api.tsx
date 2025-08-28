@@ -67,3 +67,21 @@ export const searchTask = async (query: string) => {
         throw new Error("Failed task look up");
     }
 }
+
+export const markTaskDone = async (id: string, params: { status: string }) => {
+    try {
+        const res = await api.put(`/tasks/${id}`, params, {});
+        return res.data;
+    } catch (e) {
+        throw new Error("Failed task status update");
+    }
+}
+
+export const deleteTask = async (id: string) => {
+    try {
+        const res = await api.delete(`/tasks/${id}`);
+        return res.data;
+    } catch (e) {
+        throw new Error("Failed to delete task");
+    }
+}

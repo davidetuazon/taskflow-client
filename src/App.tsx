@@ -1,4 +1,4 @@
-import React, { Children } from 'react';
+import React from 'react';
 import {
   BrowserRouter,
   Routes,
@@ -7,7 +7,7 @@ import {
   Navigate,
 } from 'react-router-dom';
 import './App.css'
-import Cookie from 'js-cookie';
+import Cookies from 'js-cookie';
 import AuthProvider from './providers/AuthProvider';
 import { ACCESS_TOKEN } from './utils/constants';
 
@@ -41,6 +41,30 @@ function App() {
               </RequireAuth>
             }
           />
+          <Route
+            path='/tasks/:id/done'
+            element={
+              <RequireAuth>
+                <Home />
+              </RequireAuth>
+            }
+            />
+            <Route
+            path='/tasks/:id/edit'
+            element={
+              <RequireAuth>
+                <Home />
+              </RequireAuth>
+            }
+            />
+            <Route
+            path='/tasks/:id/delete'
+            element={
+              <RequireAuth>
+                <Home />
+              </RequireAuth>
+            }
+            />
         </Routes>
       </AuthProvider>
     </BrowserRouter>
@@ -50,7 +74,7 @@ function App() {
 
 function RequireAuth({ children }: { children: React.JSX.Element }) {
 
-  const token = Cookie.get(ACCESS_TOKEN);
+  const token = Cookies.get(ACCESS_TOKEN);
   const location = useLocation();
 
   if (!token) {

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { me } from "../services/api";
+import { fetchTask, me } from "../services/api";
 import { useMediaQuery } from "react-responsive";
 import { useAuth } from "../providers/AuthProvider";
 import colors from "../constants/colors";
@@ -13,8 +13,12 @@ export default function Home() {
     const { user, setUser } = useAuth();
 
     const init = async () => {
-        const res = await me();
-        setUser(res);
+        try {
+            const loggedUser = await me();
+            setUser(loggedUser);
+        } catch (e) {
+            console.error("Failed to fetch user data", e);
+        }
     };
 
     useEffect(() => {
@@ -27,9 +31,10 @@ export default function Home() {
             <div style={styles.header}>
                 <TopBar />
             </div>
-            <OverviewGrid style={{
-                flexDirection: isBigScreen ? 'row' : 'column'
-            }}
+            <OverviewGrid
+                style={{
+                    flexDirection: isBigScreen ? 'row' : 'column'
+                }}
             />
             <MainGrid />
         </div>

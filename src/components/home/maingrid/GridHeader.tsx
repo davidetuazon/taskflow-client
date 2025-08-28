@@ -1,5 +1,6 @@
 import React from "react";
 import { useMediaQuery } from "react-responsive";
+import colors from "../../../constants/colors";
 
 import Text from "../../commons/Text";
 import SortOption from "./SortOption";
