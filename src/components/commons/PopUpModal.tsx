@@ -40,6 +40,7 @@ const styles: {[key: string]: React.CSSProperties} = {
         alignItems: 'center',
         overflow: 'hidden',
         backdropFilter: 'blur(3px)',
+        zIndex: 20
     },
     container: {
         display: 'flex',

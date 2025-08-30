@@ -85,3 +85,31 @@ export const deleteTask = async (id: string) => {
         throw new Error("Failed to delete task");
     }
 }
+
+export const updateTask = async (id: string, params: {
+    title: string,
+    description: string,
+    status: string,
+    dueDate: string,
+}) => {
+    try {
+        const res = await api.put(`/tasks/${id}`, params, {});
+        return res.data;
+    } catch (e) {
+        throw new Error("Failed to update task");
+    }
+}
+
+export const createTask = async (params: {
+    title: string,
+    description: string,
+    status: string,
+    dueDate: string,
+}) => {
+    try {
+        const res = await api.post('/tasks', params, {});
+        return res.data;
+    } catch (e) {
+        throw new Error("Failed to create new task");
+    }
+}

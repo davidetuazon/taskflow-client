@@ -1,4 +1,4 @@
-import React from "react";
+import React, { use, useEffect } from "react";
 import colors from "../../../constants/colors";
 import typography from "../../../constants/typography";
 import { useLocation, useParams } from "react-router-dom";
@@ -8,44 +8,45 @@ import TextInput from "../../commons/TextInputs";
 import Button from "../../commons/Button";
 import PopUpModal from "../../commons/PopUpModal";
 import Container from "../../commons/Container";
-import EditTasKModal from "./EditTaskModal";
+import EditTaskModal from "./EditTaskModal";
 
 type Props = {
     style?: React.CSSProperties,
-    Title: string,
-    IsOpen: boolean,
-    OnClose: () => void,
-    MarkAsDone: (taskId: string) => void,
-    DeleteTask: (taskId: string) => void,
+    isOpen: boolean,
+    onClose: () => void,
+    markAsDone: (taskId: string) => void,
+    deleteTask: (taskId: string) => void,
+    task: any,
+    onUpdate: (id: string, payload) => void | Promise<void>,
 }
 
 export default function TaskModal(props: Props) {
-    const { id } = useParams();
+    const { _id, title } = props.task;
     const location = useLocation();
 
     if (location.pathname.endsWith('done')) {
         return (
             <PopUpModal
-                isOpen={props.IsOpen}
-                onClose={props.OnClose}
+                isOpen={props.isOpen}
+                onClose={props.onClose}
                 containerStyle={{...styles.container, border: `6px solid ${colors.accent}`}}
             >
                 <Text variant="title" style={styles.text}>
-                    Mark "{props.Title}" as done?
+                    Mark "{title}" as done?
                 </Text>
                 <div style={styles.footer}>
                     <Button 
                         title="No"
-                        onButtonPress={props.OnClose}
+                        onButtonPress={props.onClose}
                         style={styles.noButton}
                         titleStyle={{ fontSize: typography.title, color: colors.textSecondary }}
                     />
                     <Button 
                         title="Yes"
                         onButtonPress={() => {
-                            if (!id) return;
-                            props.MarkAsDone(id);
-                            props.OnClose();
+                            if (!_id) return;
+                            props.markAsDone(_id);
+                            props.onClose();
                         }}
                         style={styles.yesButton}
                         titleStyle={{ fontSize: typography.title,  color: colors.accent }}
@@ -57,33 +58,38 @@ export default function TaskModal(props: Props) {
 
     if (location.pathname.endsWith('edit')) {
         return (
-            <EditTasKModal Title={props.Title} IsOpen={props.IsOpen} OnClose={props.OnClose} />
+            <EditTaskModal
+                task={props.task}
+                onUpdate={props.onUpdate}
+                IsOpen={props.isOpen}
+                OnClose={props.onClose}
+            />
         );
     }
 
     if (location.pathname.endsWith('delete')) {
         return (
             <PopUpModal
-                isOpen={props.IsOpen}
-                onClose={props.OnClose}
+                isOpen={props.isOpen}
+                onClose={props.onClose}
                 containerStyle={{...styles.container, border: '6px solid red'}}
             >
                 <Text variant="title" style={styles.text}>
-                    This will delete "{props.Title}". Are you sure?
+                    This will delete "{title}". Are you sure?
                 </Text>
                 <div style={styles.footer}>
                     <Button 
                         title="No"
-                        onButtonPress={props.OnClose}
+                        onButtonPress={props.onClose}
                         style={styles.noButton}
                         titleStyle={{ fontSize: typography.title, color: colors.textSecondary }}
                     />
                     <Button 
                         title="Yes"
                         onButtonPress={() => {
-                            if (!id) return;
-                            props.DeleteTask(id);
-                            props.OnClose();
+                            if (!_id) return;
+                            props.deleteTask(_id);
+                            props.onClose();
                         }}
                         style={styles.yesButton}
                         titleStyle={{ fontSize: typography.title,  color: 'red' }}

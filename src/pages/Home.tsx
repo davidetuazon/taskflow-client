@@ -61,9 +61,9 @@ const styles: {[key: string]: React.CSSProperties} = {
         width: '100%',
         paddingTop: 5,
         paddingBottom: 5,
-        // boxShadow: '0 1px 3px rgba(0,0,0,0.08)',
-        // overflow: 'hidden',
-        // position: 'sticky',
-        // top: 0,
+        position: 'sticky', // makes it sticky
+        top: 0,             // sticks to the top
+        zIndex: 10,
+        boxShadow: '0 2px 5px rgba(0, 0, 0, 0.1)',
     },
 }

@@ -1,6 +1,6 @@
 import React, { useCallback } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
-import { first, throttle } from "lodash";
+import { throttle } from "lodash";
 import { useNavigate } from "react-router-dom";
 import colors from "../constants/colors";
 import TaskFlow from '../assets/TaskFlowV2.svg';

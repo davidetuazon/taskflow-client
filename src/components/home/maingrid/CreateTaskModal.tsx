@@ -1,22 +1,19 @@
-import React, { useEffect } from "react";
+import React from "react";
 import colors from "../../../constants/colors";
 import typography from "../../../constants/typography";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useForm, SubmitHandler } from "react-hook-form";
-import { updateTask } from "../../../services/api";
+import { useMediaQuery } from "react-responsive";
+import { mustNotBeEmptyOrSpace } from "../../../utils/validators";
 
+import PopUpModal from "../../commons/PopUpModal";
+import Button from "../../commons/Button";
 import Text from "../../commons/Text";
 import TextInput from "../../commons/TextInputs";
-import Button from "../../commons/Button";
-import PopUpModal from "../../commons/PopUpModal";
-import { useMediaQuery } from "react-responsive";
 
 type Props = {
-    style?: React.CSSProperties,
-    task: any,
-    onUpdate: (id: string, payload) => void | Promise<void>,
-    IsOpen: boolean,
-    OnClose: () => void,
+    isOpen: boolean,
+    createTask: (payload) => void | Promise<void>, 
 }
 
 type Inputs = {
@@ -26,60 +23,61 @@ type Inputs = {
     dueDate: string,
 }
 
-export default function EditTasKModal(props: Props) {
+export default function CreateTaskModal(props: Props) {
     const isBigScreen = useMediaQuery({ minWidth: 769 });
-    const { _id, title, description, status, dueDate } = props.task;
     const navigate = useNavigate();
-    const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<Inputs>({
+    const location = useLocation();
+    const { register, handleSubmit, formState: { errors, isSubmitting }} = useForm<Inputs>({
         defaultValues: {
-            title: title,
-            description: description,
-            status: status,
-            dueDate: dueDate?.slice(0, 10)
+            dueDate: new Date().toISOString().split("T")[0],
+            status: 'todo',
         }
     });
-    
-    const onSubmit: SubmitHandler<Inputs> = async (data) => {
-        if (!_id) return;
 
-        // handle empty fields
-        const fallback = (field: string, prev: string) => field.trim() === "" ? prev: field;
-        const payload = {
-            title: fallback(data.title, title),
-            description: fallback(data.description, description),
-            status: fallback(data.status, status),
-            dueDate: fallback(data.dueDate, dueDate)
+    const onSubmit: SubmitHandler<Inputs> = async (data) => {
+        if (!data) return;
+        const payload: {
+            title: string,
+            description: string,
+            status: string,
+            dueDate: string,
+        } = {
+            title: data.title,
+            description: data.description,
+            status: data.status,
+            dueDate: data.dueDate,
         };
-        props.OnClose();
+        navigate(-1);
         try {
-            await props.onUpdate(_id, payload);
+            await props.createTask(payload);
         } catch (e) {
-            console.error({ message: e });
+            console.error("Failed to create new task", e);
         }
     }
 
-    return (
+    if (location.pathname.endsWith('create')) {
+        return (
         <PopUpModal
-            isOpen={props.IsOpen}
-            onClose={props.OnClose}
+            isOpen={props.isOpen}
+            onClose={() => navigate(-1)}
             containerStyle={styles.container}
         >
             <div style={{...styles.body, padding: isBigScreen ? '10px 20px' : 0 }}>
+                <Text variant="heading">
+                    Create New Task
+                </Text>
                 <form style={styles.form}>
-                    <Text variant="subtitle">
-                        Title:
-                    </Text>
                     <TextInput
-                        style={{ border: `3px solid ${colors.secondary}` }}
                         textProps={{
-                            placeholder: `${title}`,
-                            ...register('title')
+                            placeholder: 'Task Title',
+                            ...register('title', {
+                                validate: {
+                                    mustNotBeEmptyOrSpace
+                                }
+                            })
                         }}
                         error = {errors.title?.message}
                     />
-                    <Text variant="subtitle">
-                        Due:
-                    </Text>
                     <div style={styles.fieldContainer}>
                         <input
                             type='date'
@@ -87,9 +85,6 @@ export default function EditTasKModal(props: Props) {
                             style={styles.selectField}
                         />
                     </div>
-                    <Text variant="subtitle">
-                        Status:
-                    </Text>
                     <div style={styles.fieldContainer}>
                         <select
                             {...register('status')}
@@ -100,28 +95,29 @@ export default function EditTasKModal(props: Props) {
                             <option value='done'>done</option>
                         </select>
                     </div>
-                    <Text variant="subtitle">
-                        Description:
-                    </Text>
                     <TextInput
-                        style={{ marginTop: 35, border: `3px solid ${colors.secondary}` }}
+                        style={{ marginTop: 35 }}
                         textProps={{
-                            placeholder: `${description}`,
-                            ...register('description')
+                            placeholder: 'Task Description',
+                            ...register('description', {
+                                validate: {
+                                    mustNotBeEmptyOrSpace
+                                }
+                            })
                         }}
                         error = {errors.description?.message}
                     />
                     <div style={styles.footer}>
                         <Button 
-                            title="No"
-                            onButtonPress={props.OnClose}
-                            style={styles.noButton}
+                            title="Cancel"
+                            style={styles.cancelButton}
                             titleStyle={{ fontSize: typography.title, color: colors.textSecondary }}
+                            onButtonPress={() => navigate(-1)}
                         />
                         <Button
-                            title="Update"
-                            style={styles.yesButton}
-                            titleStyle={{ fontSize: typography.title, color: colors.secondary }}
+                            title="Add"
+                            style={styles.createButton}
+                            titleStyle={{ fontSize: typography.title, color: colors.primary }}
                             onButtonPress={handleSubmit(onSubmit)}
                             disabled={isSubmitting}
                         />
@@ -129,23 +125,25 @@ export default function EditTasKModal(props: Props) {
                 </form>
             </div>
         </PopUpModal>
-    );
+        );
+    }
 }
 
 const styles: {[key: string]: React.CSSProperties} = {
     container: {
         backgroundColor: colors.background,
         // padding: 20,
-        // margin: 30,
         borderRadius: '23px',
         minWidth: '300px',
         maxWidth: '450px',
-        border: `6px solid ${colors.secondary}`
+        border: `6px solid ${colors.primary}`
     },
     body: {
+        // border: '1px solid red',
         display: 'flex',
         flex: 1,
         justifyContent: 'center',
+        flexDirection: 'column',
     },
     form: {
         // border: '1px solid red',
@@ -154,7 +152,7 @@ const styles: {[key: string]: React.CSSProperties} = {
     },
     fieldContainer: {
         backgroundColor: colors.surface,
-        border: `3px solid ${colors.secondary}`,
+        border: `3px solid ${colors.primary}`,
         borderRadius: 12,
         paddingLeft: 15,
         paddingRight: 15,
@@ -179,7 +177,7 @@ const styles: {[key: string]: React.CSSProperties} = {
         justifyContent: 'space-between',
         gap: 10,
     },
-    yesButton: {
+    createButton: {
         border: `4px solid ${colors.darkBorder}`,
         // width: 'auto',
         padding: '20px 30px',
@@ -187,7 +185,7 @@ const styles: {[key: string]: React.CSSProperties} = {
         textAlign: 'center',
         alignContent: 'center'
     },
-    noButton: {
+    cancelButton: {
         border: `4px solid ${colors.surface}`,
         // width: 'auto',
         padding: '20px 30px',

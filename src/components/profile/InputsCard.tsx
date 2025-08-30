@@ -51,7 +51,7 @@ export default function InputsCard() {
 
 const styles: {[key: string]: React.CSSProperties} = {
      container: {
-        border: '1px solid red',
+        // border: '1px solid red',
         display: 'flex',
         flexDirection: 'column',
         flex: 1,

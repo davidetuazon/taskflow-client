@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import colors from "../../../constants/colors";
 import typography from "../../../constants/typography";
 import Container from "../../commons/Container";
@@ -9,26 +9,23 @@ import { useLocation, useNavigate } from "react-router-dom";
 
 type Props = {
     style?: React.CSSProperties,
-    Title: string,
-    Description: string,
-    Status: string,
-    DueDate: string,
-    TaskID: string,
-    MarkAsDone: (taskId: string) => void,
-    DeleteTask: (taskId: string) => void,
+    markAsDone: (taskId: string) => void,
+    deleteTask: (taskId: string) => void,
+    task: any,
+    onUpdate: (id: string, payload) => void | Promise<void>,
 }
 
 export default function TaskCard(props: Props) {
-    const { Title, Description, Status, DueDate, TaskID, } = props;
+    const { _id, title, description, status, dueDate } = props.task;
     const navigate = useNavigate();
     const location = useLocation();
 
     const isModalOpen =
-        location.pathname === `/tasks/${TaskID}/done` ||
-        location.pathname === `/tasks/${TaskID}/edit` ||
-        location.pathname === `/tasks/${TaskID}/delete`;
+        location.pathname === `/tasks/${_id}/done` ||
+        location.pathname === `/tasks/${_id}/edit` ||
+        location.pathname === `/tasks/${_id}/delete`;
 
-    const overDue = new Date(DueDate).getTime() > Date.now();
+    const overDue = new Date(dueDate).getTime() > Date.now();
 
     return (
         <Container style={{
@@ -40,7 +37,7 @@ export default function TaskCard(props: Props) {
         >
             <div style={styles.title}>
                 <Text variant="heading">
-                    {Title}
+                    {title}
                 </Text>
             </div>
             <div style={styles.body}>
@@ -49,24 +46,24 @@ export default function TaskCard(props: Props) {
                 </p>
                 <Text variant="subtitle"
                     textStyle={{ 
-                        color: new Date(DueDate).getTime() > Date.now() ?
+                        color: new Date(dueDate).getTime() > Date.now() ?
                             colors.textPrimary :
                             'red'
                         }}
                 >
-                    {DueDate.split("T")[0]}
+                    {dueDate.split("T")[0]}
                 </Text>
                 <p style={styles.p}>
                     Status:
                 </p>
                 <Text variant="subtitle">
-                    {Status}
+                    {status}
                 </Text>
                 <p style={styles.p}>
                     Description:
                 </p>
                 <Text variant="subtitle">
-                    {Description}
+                    {description}
                 </Text>
             </div>
             <div style={styles.footer}>
@@ -74,29 +71,30 @@ export default function TaskCard(props: Props) {
                     title="Done"
                     style={{
                         ...styles.button,
-                        pointerEvents: Status === 'done' ? 'none' : 'auto'
+                        pointerEvents: status === 'done' ? 'none' : 'auto'
                     }}
-                    titleStyle={{ color: Status === 'done' ? colors.darkBorder : colors.accent }}
-                    onButtonPress={() => navigate(`/tasks/${TaskID}/done`)}
+                    titleStyle={{ color: status === 'done' ? colors.darkBorder : colors.accent }}
+                    onButtonPress={() => navigate(`/tasks/${_id}/done`)}
                 />
                 <Button
                     title="Edit"
                     style={styles.button}
-                    titleStyle={{ color: colors.primary }}
-                    onButtonPress={() => navigate(`/tasks/${TaskID}/edit`)}
+                    titleStyle={{ color: colors.secondary }}
+                    onButtonPress={() => navigate(`/tasks/${_id}/edit`)}
                 />
                 <Button
                     title="Delete"
                     style={styles.button}
                     titleStyle={{ color: 'red' }}
-                    onButtonPress={() => navigate(`/tasks/${TaskID}/delete`)}
+                    onButtonPress={() => navigate(`/tasks/${_id}/delete`)}
                 />
                 <TaskModal
-                    Title={props.Title}
-                    IsOpen={isModalOpen}
-                    OnClose={() => navigate(-1)}
-                    MarkAsDone={props.MarkAsDone}
-                    DeleteTask={props.DeleteTask}
+                    isOpen={isModalOpen}
+                    onClose={() => navigate(-1)}
+                    markAsDone={props.markAsDone}
+                    deleteTask={props.deleteTask}
+                    onUpdate={props.onUpdate}
+                    task={props.task}
                 />
             </div>
         </Container>

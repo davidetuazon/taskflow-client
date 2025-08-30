@@ -55,6 +55,6 @@ const styles: {[key: string]: React.CSSProperties} = {
     },
     disabled: {
         pointerEvents: 'none',
-        backgroundColor: colors.accent,
+        backgroundColor: colors.darkBorder,
     }
 }

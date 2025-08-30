@@ -34,7 +34,7 @@ export default function ProfileSettings() {
 
 const styles: {[key: string]: React.CSSProperties} = {
     container: {
-        border: '1px solid red',
+        // border: '1px solid red',
         display: 'flex',
         flexDirection: 'column',
         flex: 1,
@@ -43,7 +43,7 @@ const styles: {[key: string]: React.CSSProperties} = {
         padding: 30,
     },
     smallContainer: {
-        border: '1px solid red',
+        // border: '1px solid red',
         display: 'flex',
         flexDirection: 'column',
         flex: 1,

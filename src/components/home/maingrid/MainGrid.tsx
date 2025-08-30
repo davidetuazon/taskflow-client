@@ -2,12 +2,13 @@ import React, { SetStateAction, useEffect, useState } from "react";
 import { useAuth } from "../../../providers/AuthProvider";
 import { useMediaQuery } from "react-responsive";
 import colors from "../../../constants/colors";
-import { deleteTask, fetchTask, markTaskDone } from "../../../services/api";
+import { createTask, deleteTask, fetchTask, markTaskDone, updateTask } from "../../../services/api";
 
 import TaskCard from "./TaskCard";
 import GridHeader from "./GridHeader";
 import SortOption from "./SortOption";
 import FilterOption from "./FilterOption";
+import { random } from "lodash";
 
 type Props = {
     style?: React.CSSProperties,
@@ -23,8 +24,7 @@ const filterCycle: filterOption[] = ['status', 'todo', 'in-progress', 'done'];
 export default function MainGrid(props: Props) {
     const { task, setTask } = props;
     const isBigScreen = useMediaQuery({ minWidth: 769 });
-    // const [task, setTask] = useState<any[]>([]);
-    // const [originalTask, setOriginalTask] = useState<any[]>([]);
+ 
     const [sortState, setSortState] = useState<SortOption>('dueDate');
     const [filterState, setFilterState] = useState<filterOption>('status');
     
@@ -69,9 +69,9 @@ export default function MainGrid(props: Props) {
         }
     }
 
-    const DeleteTask = async (taskId: string) => {
+    const handleDeleteTask = async (taskId: string) => {
         const prevTask = [...task];
-        setTask(prev => prev.map(t => t._id !== taskId));
+        setTask(prev => prev.filter(t => t._id !== taskId));
 
         try {
             await deleteTask(taskId);
@@ -81,7 +81,34 @@ export default function MainGrid(props: Props) {
         }
     }
 
-      // derive tasks each render instead of storing copies
+    const handleUpdateTask = async (id: string, payload) => {
+        const prevTask = [...task];
+        setTask(task.map((t: any) => t._id === id ? { ...t, ...payload } : t));
+
+        try {
+            await updateTask(id, payload);
+        } catch (e) {
+            console.error("Failed to update task", e);
+            setTask(prevTask);
+        }
+    }
+
+    const handleCreateTask = async (payload) => {
+        if (!payload) return;
+        
+        const temp = { ...payload, _id: random(99)}
+        setTask(prev => [...prev, temp]);
+
+        const prevTask = [...task];
+        try {
+            await createTask(payload);
+        } catch (e) {
+            console.error("Failed to create new task", e);
+            setTask(prevTask);
+        }
+    }
+
+    // derive tasks each render instead of storing copies
     const displayTasks = recomputeTask(filterState, sortState);
 
     return (
@@ -92,6 +119,7 @@ export default function MainGrid(props: Props) {
                         SortTasks={applySort}
                         FilterTasks={applyFilter}
                         FilterState={filterState}
+                        createTask={handleCreateTask}
                     />
                 </div>
                 {!isBigScreen && (
@@ -117,13 +145,10 @@ export default function MainGrid(props: Props) {
                     {displayTasks.map((t: any) => (
                         <div key={t._id}>
                             <TaskCard
-                                Title={t.title}
-                                Description={t.description}
-                                Status={t.status}
-                                DueDate={t.dueDate}
-                                TaskID={t._id}
-                                MarkAsDone={markAsDone}
-                                DeleteTask={DeleteTask}
+                                markAsDone={markAsDone}
+                                deleteTask={handleDeleteTask}
+                                task={t}
+                                onUpdate={handleUpdateTask}
                             />
                         </div>
                     ))}
@@ -148,16 +173,17 @@ const styles: {[key: string]: React.CSSProperties} = {
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'space-around',
-        flex: 1,
         padding: 10,
-        margin: 10,
+        // margin: 10,
         width: '90%',
+        height: '90%',
     },
     mainCard: {
         // border: `3px solid ${colors.textSecondary}`,
         display: 'flex',
         flex: 1,
         flexDirection: 'column',
+        overflowY: 'auto',
     },
     header: {
         // border: '2px solid red',
@@ -179,7 +205,6 @@ const styles: {[key: string]: React.CSSProperties} = {
     taskCard: {
         // border: '1px solid red',
         display: 'flex',
-        flexDirection: 'row',
         flexWrap: 'wrap',
         justifyContent: 'center',
         gap: 40,
@@ -192,5 +217,6 @@ const styles: {[key: string]: React.CSSProperties} = {
         flexDirection: 'row',
         padding: 0,
         margin: 0,
+        boxShadow: '0 2px 5px rgba(0,0,0,0.08)',
     }
 }

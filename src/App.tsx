@@ -49,22 +49,30 @@ function App() {
               </RequireAuth>
             }
             />
-            <Route
+          <Route
             path='/tasks/:id/edit'
             element={
               <RequireAuth>
                 <Home />
               </RequireAuth>
             }
-            />
-            <Route
+          />
+          <Route
             path='/tasks/:id/delete'
             element={
               <RequireAuth>
                 <Home />
               </RequireAuth>
             }
-            />
+          />
+          <Route
+            path='/tasks/create'
+            element={
+              <RequireAuth>
+                <Home />
+              </RequireAuth>
+            }
+          />
         </Routes>
       </AuthProvider>
     </BrowserRouter>
