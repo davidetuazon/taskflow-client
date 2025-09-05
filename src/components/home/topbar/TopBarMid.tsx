@@ -11,7 +11,7 @@ type Props = {
 }
 
 export default function TopBarMid(props: Props) {
-    const isBigScreen = useMediaQuery({ minWidth: 769 });
+    const isBigScreen = useMediaQuery({ minWidth: 768 });
     const [query, setQuery] = useState<string>('');
     const [results, setResults] = useState<any[]>([]);
     
@@ -34,19 +34,17 @@ export default function TopBarMid(props: Props) {
 
     return (
         <div style={ Object.assign({}, styles.container, props.style) }>
-            <TextInput
-                style={{ 
-                    paddingLeft: 20,
-                    paddingRight: 20,
-                    border: `3px solid ${colors.border}` }}
-                textProps={{
-                    placeholder: 'Search tasks...',
-                    value: query,
-                    onChange: (e: React.ChangeEvent<HTMLInputElement>) => setQuery(e.target.value),
-                }}
-                textStyle={{ fontSize: isBigScreen ? typography.subtitle : typography.caption }}
-            />
-
+            {isBigScreen && (
+                <TextInput
+                    style={isBigScreen ? styles.searchbar : styles.searchbarIcon}
+                    textProps={{
+                        placeholder: 'Search',
+                        value: query,
+                        onChange: (e: React.ChangeEvent<HTMLInputElement>) => setQuery(e.target.value),
+                    }}
+                    textStyle={{ fontSize: isBigScreen ? typography.subtitle : typography.caption }}
+                />
+            )}
             {(results?.length ?? 0) > 0 && (
                 <div style={styles.dropdown}>
                     {results.map((task:any) => (
@@ -74,7 +72,17 @@ const styles: {[key: string]: React.CSSProperties} = {
         flexDirection: 'column',
         flex: 1,
         justifyContent: 'center',
-        position: 'relative'
+        position: 'relative',
+        padding: '0 20px',
+        margin: 0,
+    },
+    searchbar: {
+        border: `1px solid ${colors.darkBorder}`,
+        height: 30,
+        borderRadius: '8px'
+    },
+    searchbarIcon: {
+        border: `1px solid ${colors.darkBorder}`,
     },
     dropdown: {
         position: 'absolute',
@@ -84,15 +92,14 @@ const styles: {[key: string]: React.CSSProperties} = {
         flexDirection: 'column',
         flex: 1,
         backgroundColor: colors.background,
-        border: `2px solid ${colors.border}`,
+        border: `1px solid ${colors.darkBorder}`,
         borderRadius: '8px',
         width: 'auto',
         padding: 0, margin: 0,
     },
     button: {
         // border: '1px solid red',
-        backgroundColor: colors.surface,
-        // margin: 10,
+        backgroundColor: colors.background,
         padding: 15,
     },
     results: {

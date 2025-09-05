@@ -3,7 +3,7 @@ import { ACCESS_TOKEN } from "../utils/constants";
 import Cookies from 'js-cookie';
 
 const BASE_URL = "http://localhost:5000";
-const BASE_PATH = `${BASE_URL}/api/v1`;
+const BASE_PATH = `${BASE_URL}/api/v2`;
 
 const api = axios.create({
     baseURL: BASE_PATH,
@@ -35,7 +35,11 @@ export const register = async (params: {
     try {
         const res = await api.post('/users/register', params, {});
         return res.data;
-    } catch (e) {
+    } catch (e: any) {
+        console.log(e);
+        if (e.response?.data?.error) {
+            throw new Error(e.response.data.error);
+        }
         throw new Error("Registration failed");
     }
 }
@@ -49,14 +53,99 @@ export const me = async () => {
     }
 }
 
-export const fetchTask = async () => {
+export const getTaskOverview = async () => {
     try {
-        const res = await api.get('/tasks');
+        const res = await api.get('/analytics/overview');
         return res.data;
     } catch (e) {
         throw new Error("Failed to fetch task");
     }
 }
+
+export const getFeed = async (option: string) => {
+    try {
+        const res = await api.get('/feed', { params: { filter: option, limit: 3 } });
+        return res.data;
+    } catch (e) {
+        throw new Error("Failed to fetch feed");
+    }
+}
+
+export const fetchProjects = async () => {
+    try {
+        const res = await api.get('/projects');
+        return res.data;
+    } catch (e) {
+        throw new Error("Failed to fetch projects");
+    }
+}
+
+export const createProject = async (params: {
+    title: string,
+    description: string,
+    members?: string[],
+}) => {
+    try {
+        const res = await api.post('/projects', params, {});
+        return res.data;
+    } catch (e: any) {
+        console.log(e);
+        if (e.response?.data?.error) {
+            throw new Error(e.response.data.error);
+        }
+        throw new Error("Failed to create new project");
+    }
+}
+
+export const getProject = async (slug: string) => {
+    try {
+        const res = await api.get(`/projects/${slug}`);
+        return res.data;
+    } catch (e) {
+        throw new Error("Failed to get project");
+    }
+} 
+
+export const listTask = async (slug: string, params: any) => {
+    try {
+        const res = await api.get(`/projects/${slug}/tasks`, { params });
+        return res.data;
+    } catch (e) {
+        throw new Error("Failed to fetch task list");
+    }
+}
+
+export const createTask = async (slug: string, params: {
+    title: string,
+    description: string,
+    dueDate: string
+    assignedTo: string
+}) => {
+    try {
+        const res = await api.post(`/projects/${slug}/tasks`, params, {});
+        return res.data;
+    } catch (e) {
+        throw new Error("Failed to create new task");
+    }
+}
+
+// export const getMembers = async (id: string, members: any) => {
+//     try {
+//         const res = await api.get(`/projects/${id}/members`, members);
+//         return res.data;
+//     } catch (e) {
+//         throw new Error("Failed to fetch members");
+//     }
+// }
+
+
+
+
+
+
+
+
+
 
 export const searchTask = async (query: string) => {
     if (!query) return [];
@@ -100,16 +189,16 @@ export const updateTask = async (id: string, params: {
     }
 }
 
-export const createTask = async (params: {
-    title: string,
-    description: string,
-    status: string,
-    dueDate: string,
-}) => {
-    try {
-        const res = await api.post('/tasks', params, {});
-        return res.data;
-    } catch (e) {
-        throw new Error("Failed to create new task");
-    }
-}
+// export const createTask = async (params: {
+//     title: string,
+//     description: string,
+//     status: string,
+//     dueDate: string,
+// }) => {
+//     try {
+//         const res = await api.post('/tasks', params, {});
+//         return res.data;
+//     } catch (e) {
+//         throw new Error("Failed to create new task");
+//     }
+// }

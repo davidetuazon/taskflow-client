@@ -1,6 +1,6 @@
-import React, { use } from "react";
+import React, { use, useState } from "react";
 import colors from "../../../constants/colors";
-import avatar from '../../../assets/profile.png';
+import profile from '../../../assets/icons/profile.svg';
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../../providers/AuthProvider";
 import { useMediaQuery } from "react-responsive";
@@ -12,13 +12,25 @@ type Props = {
 
 export default function TopBarRight(props: Props) {
     const { user } = useAuth();
-    const isBigScreen = useMediaQuery({ minWidth: 769 });
+    const isBigScreen = useMediaQuery({ minWidth: 768 });
+    const [isHovered, setIsHovered] = useState<string | null>(null)
 
     return (
         <div style={ Object.assign({}, styles.container, props.style) }>
             <div style={ Object.assign({}, styles.avatarContainer, props.avatarStyle) }>
-                <Link to={`/account/settings/${user?._id}`} style={isBigScreen ? styles.link : styles.smallLink}>
-                    <img src={avatar} style={styles.avatar} />
+                <Link
+                    to={`/account/settings/${user?._id}`}
+                    style={isBigScreen ? styles.link : styles.smallLink}
+                >
+                    <img
+                        src={profile}
+                        style={{
+                            ...styles.avatar,
+                            backgroundColor: isHovered === user ? colors.surface : colors.background,
+                        }}
+                        onMouseEnter={() => setIsHovered(user)}
+                        onMouseLeave={() => setIsHovered(null)}
+                    />
                 </Link>
             </div>
         </div>
@@ -41,17 +53,18 @@ const styles: {[key: string]: React.CSSProperties} = {
        objectFit: 'contain',
        width: '100%',
        height: 'inherit',
-       border: `3px solid ${colors.surface}`,
-       borderRadius: '12px',
-       backgroundColor: colors.darkBorder,
+       border: `1px solid ${colors.darkBorder}`,
+       borderRadius: '8px',
+       padding: '5px 2px',
     },
     link: {
-        height: 50,
+        // border: '1px solid white',
+        height: 22,
         cursor: 'pointer',
     },
     smallLink: {
-        // border: '1px solid red',
-        height: 35,
+         // border: '1px solid white',
+        height: 25,
         cursor: 'pointer',
     }
 }

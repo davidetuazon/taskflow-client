@@ -17,12 +17,11 @@ export default function TextInput(props: Props) {
             <div style={ Object.assign({},
                     styles.container,
                     props.error ?
-                    styles.errorContainer :
-                    {},
+                    styles.errorContainer : {},
                     props.style
             ) }>
                 <input
-                    style={{...styles.textInput}}
+                    style={Object.assign({}, styles.textInput, props.textStyle)}
                     {...props.textProps}
                 />
             </div>
@@ -37,8 +36,8 @@ export default function TextInput(props: Props) {
 
 const styles: {[key: string]: React.CSSProperties} = {
     container: {
-        backgroundColor: colors.surface,
-        border: `3px solid ${colors.primary}`,
+        backgroundColor: colors.background,
+        border: `2px solid ${colors.darkBorder}`,
         borderRadius: 12,
         paddingLeft: 15,
         paddingRight: 15,
@@ -47,7 +46,7 @@ const styles: {[key: string]: React.CSSProperties} = {
         marginTop: 10,
     },
     errorContainer: {
-        border: '3px solid red',
+        border: `3px solid ${colors.error}`,
     },
     textInput: {
         border: 'none',
@@ -62,7 +61,7 @@ const styles: {[key: string]: React.CSSProperties} = {
     errorLabel: {
         // border: '1px solid red',
         marginTop: 10,
-        color: 'red',
+        color: colors.error,
         fontSize: typography.caption,  
     }
 }

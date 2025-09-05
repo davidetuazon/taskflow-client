@@ -13,7 +13,7 @@ type Props = {
 type SortOption = 'default' | 'dueDate';
 
 export default function SortOption(props: Props) {
-    const isBigScreen = useMediaQuery({ minWidth: 769 });
+    const isBigScreen = useMediaQuery({ minWidth: 768 });
     const [active, setActive] = useState<SortOption>('default');
 
     return (

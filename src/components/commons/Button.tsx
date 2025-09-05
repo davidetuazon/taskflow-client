@@ -7,6 +7,8 @@ type Props = {
     title: string | string,
     titleStyle?: React.CSSProperties,
     onButtonPress?: () => void,
+    onMouseEnter?: () => void,
+    onMouseLeave?: () => void,
     disabled?: boolean,
 }
 
@@ -17,6 +19,8 @@ export default function Button(props: Props) {
         title,
         titleStyle,
         onButtonPress,
+        onMouseEnter,
+        onMouseLeave,
         disabled = false,
     } = props;
 
@@ -27,6 +31,8 @@ export default function Button(props: Props) {
                 props.disabled &&
                 styles.disabled) }
              onClick={onButtonPress}
+             onMouseEnter={onMouseEnter}
+             onMouseLeave={onMouseLeave}
         >
             <p style={Object.assign({}, styles.title, titleStyle)}>
                 {title}
@@ -49,12 +55,12 @@ const styles: {[key: string]: React.CSSProperties} = {
     title: {
         margin: 0,
         textAlign: 'center',
-        fontFamily: 'Poppins-Black',
-        color: colors.surface,
+        fontFamily: 'Poppins-SemiBold',
+        color: colors.textPrimary,
         fontSize: typography.subtitle,
     },
     disabled: {
         pointerEvents: 'none',
-        backgroundColor: colors.darkBorder,
+        backgroundColor: colors.border,
     }
 }

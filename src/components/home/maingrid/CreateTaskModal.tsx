@@ -24,7 +24,7 @@ type Inputs = {
 }
 
 export default function CreateTaskModal(props: Props) {
-    const isBigScreen = useMediaQuery({ minWidth: 769 });
+    const isBigScreen = useMediaQuery({ minWidth: 768 });
     const navigate = useNavigate();
     const location = useLocation();
     const { register, handleSubmit, formState: { errors, isSubmitting }} = useForm<Inputs>({

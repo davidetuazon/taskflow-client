@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { fetchTask } from "../../../services/api";
 import { useMediaQuery } from "react-responsive";
 
 import Text from "../../commons/Text";
@@ -9,24 +8,11 @@ import colors from "../../../constants/colors";
 
 type Props = {
     style?: React.CSSProperties,
-    Task: any,
+    overview: any,
 }
 
 export default function OverdueCard(props: Props) {
-    const isBigScreen = useMediaQuery({ minWidth: 769 });
-    const [count, setCount] = useState(0);
-
-    const init = () => {
-        const overdueCount = props.Task.filter((task: any) => {
-            const due = new Date(task.dueDate).getTime();
-            return due < Date.now() && task.status !== 'done';
-        }).length;
-        setCount(overdueCount);
-    };
-
-    useEffect(() => {
-        init();
-    }, [props.Task]);
+    const isBigScreen = useMediaQuery({ minWidth: 768 });
 
     return (
         <Container style={isBigScreen ? styles.containerBigScreen : styles.container}>
@@ -36,7 +22,7 @@ export default function OverdueCard(props: Props) {
                     padding: 0,
                     margin: 0,
                 }}
-                textStyle={{ color: colors.textSecondary, textAlign: 'start' }}
+                textStyle={{ color: colors.textPrimary, textAlign: 'start' }}
             >
                 Overdue
             </Text>
@@ -46,9 +32,9 @@ export default function OverdueCard(props: Props) {
                     padding: 0,
                     margin: 0,
                 }}
-                textStyle={{ color: 'red', textAlign: 'start' }}
+                textStyle={{ color: colors.error, textAlign: 'start' }}
             >
-                {count}
+                {props.overview}
             </Text>
         </Container>
     );
@@ -56,14 +42,14 @@ export default function OverdueCard(props: Props) {
 
 const styles: {[key: string]: React.CSSProperties} = {
     containerBigScreen: {
-        border: '3px solid red',
+        border: `3px solid ${colors.darkBorder}`,
         padding: 20,
         margin: '30px 20px',
-        minWidth: '120px'
+        minWidth: '85px',
     },
     container: {
-        border: '3px solid red',
-        padding: 3,
+        border: `2px solid ${colors.error}`,
+        padding: 10,
         margin: 0,
     }
 }

@@ -27,7 +27,7 @@ type Inputs = {
 }
 
 export default function EditTasKModal(props: Props) {
-    const isBigScreen = useMediaQuery({ minWidth: 769 });
+    const isBigScreen = useMediaQuery({ minWidth: 768 });
     const { _id, title, description, status, dueDate } = props.task;
     const navigate = useNavigate();
     const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<Inputs>({

@@ -10,7 +10,7 @@ import InputsCard from "./InputsCard";
 import { useMediaQuery } from "react-responsive";
 
 export default function ProfileSettings() {
-    const isBigScreen = useMediaQuery({ minWidth: 769 });
+    const isBigScreen = useMediaQuery({ minWidth: 768 });
     const { user } = useAuth();
 
     return (

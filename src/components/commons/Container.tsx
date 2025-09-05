@@ -18,11 +18,11 @@ const styles: {[key: string]: React.CSSProperties} = {
     container: {
         display: 'flex',
         flexDirection: 'column',
-        border: `3px solid ${colors.primary}`,
+        border: `2px solid ${colors.surface}`,
         borderRadius: '12px',
         alignContent: 'center',
         textAlign: 'center',
-        backgroundColor: 'rgba(255, 255, 255, 0.93)',
+        backgroundColor: colors.background,
         // margin: 20,
         // padding: 30,
         // backgroundColor: colors.surface,

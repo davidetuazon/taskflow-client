@@ -6,7 +6,13 @@ const mustBeValidEmail = (val: string) =>
         ? true
         : 'The email is invalid';
 
+const mustBeValidProjectName = (val: string) =>
+    /^[a-zA-Z0-9._-]+$/.test(val) ?
+    true :
+    "Project name can only contain ASCII letters, digits, and the characters ., -, and _."   
+
 export {
     mustNotBeEmptyOrSpace,
-    mustBeValidEmail
+    mustBeValidEmail,
+    mustBeValidProjectName
 }

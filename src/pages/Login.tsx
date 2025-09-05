@@ -7,7 +7,7 @@ import { ACCESS_TOKEN } from "../utils/constants";
 import Cookies from 'js-cookie';
 import { useNavigate } from "react-router-dom";
 import colors from "../constants/colors";
-import TaskFlow from '../assets/TaskFlowV2.svg';
+import { toast } from "react-hot-toast";
 
 import Button from "../components/commons/Button";
 import Text from "../components/commons/Text";
@@ -25,31 +25,33 @@ export default function Login() {
     const navigate = useNavigate();
 
     const onSubmit: SubmitHandler<Inputs> = useCallback(throttle(async (data) => {
-        try {
-            const response = await login(data.email, data.password);
-            Cookies.set(ACCESS_TOKEN, response.token);
-            navigate('/');
-        } catch (e: any) {
-            const status = e?.response?.status;
-            switch (status) {
-                case 400:
-                    setRegistrationError('email / password is incorrect');
-                    break;
-                default: 
-                    setRegistrationError('Unknown error occured, please try again');
+        await toast.promise(
+            login(data.email, data.password)
+            .then((response) => {
+                Cookies.set(ACCESS_TOKEN, response.token);
+                setTimeout(() => {
+                    navigate('/', { replace: true });
+                }, 500);
+            }), {
+                loading: 'Logging in...',
+                success: 'welcome back!',
+                error: (e) => {
+                    const status = e?.response?.status;
+                    switch (status) {
+                        case 400:
+                            return 'Email or password is incorrect';
+                        default:
+                            return 'Uknown error occured, please try again';
+                    }
+                }
             }
-        }
+        )
     }, 2000, { trailing: true }), []);
     
     return (
         <div style={styles.root}>
             <Container 
-                style={{
-                    minWidth: '200px',
-                    overflowY: 'auto',
-                    margin: 20,
-                    padding: 30,
-                }}
+                style={styles.container}
             >
                 <div style={styles.inputs}>
                     <Text variant="heading" style={{ color: colors.primary }}>
@@ -71,7 +73,7 @@ export default function Login() {
                         )}
 
                         <TextInput
-                        style={{ marginTop: 40 }}
+                        style={styles.fields}
                         textProps={{
                             type: "email",
                             placeholder: "email",
@@ -86,7 +88,7 @@ export default function Login() {
                         />
 
                         <TextInput
-                            style={{ marginTop: 40 }}
+                            style={styles.fields}
                             textProps={{
                                 type: "password",
                                 placeholder: "password",
@@ -100,8 +102,17 @@ export default function Login() {
                         />
 
                         <div style={styles.buttons}>
-                            <Button title="Login" onButtonPress={handleSubmit(onSubmit)} disabled={isSubmitting} />
-                            <Button style={{ backgroundColor: colors.secondary }} title="Register" onButtonPress={() => navigate('/register')} />
+                            <Button
+                                style={{ padding: '20px 10px' }}
+                                title="Login"
+                                onButtonPress={handleSubmit(onSubmit)}
+                                disabled={isSubmitting}
+                                />
+                            <Button
+                            style={{ backgroundColor: colors.secondary, padding: '20px 10px' }}
+                            title="Register"
+                            onButtonPress={() => navigate('/register')}
+                            />
                         </div>
 
                     </form>
@@ -127,6 +138,13 @@ const styles: {[key: string]: React.CSSProperties} = {
         // backgroundRepeat: 'no-repeat',
         // backgroundPosition: 'center',
     },
+    container: {
+        minWidth: '200px',
+        overflowY: 'auto',
+        margin: 20,
+        padding: 30,
+        border: `2px solid ${colors.darkBorder}`,
+    },
     buttons: {
         // border: '1px solid red',
         display: 'flex',
@@ -137,5 +155,8 @@ const styles: {[key: string]: React.CSSProperties} = {
     inputs: {
         // border: '1px solid red',
         margin: 10,
+    },
+    fields: {
+        marginTop: 40,
     }
 }

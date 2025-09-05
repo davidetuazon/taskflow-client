@@ -8,7 +8,7 @@ import { useMediaQuery } from "react-responsive";
 type settingOptions = 'profile' | 'account';
 
 export default function LeftCard() {
-    const isBigScreen = useMediaQuery({ minWidth: 769 });
+    const isBigScreen = useMediaQuery({ minWidth: 768 });
     const [active, setActive] = useState<settingOptions>('profile');
 
     return (
@@ -18,8 +18,8 @@ export default function LeftCard() {
                 style={{
                     ...styles.category,
                     border: active === 'profile' ?
-                    `4px solid ${colors.textSecondary}` :
-                    `4px solid ${colors.surface}`
+                    `2px solid ${colors.textSecondary}` :
+                    `2px solid ${colors.darkBorder}`
                 }}
                 titleStyle={{
                     color: colors.textSecondary,
@@ -34,8 +34,8 @@ export default function LeftCard() {
                 style={{
                     ...styles.category,
                     border: active === 'account' ?
-                    `4px solid ${colors.textSecondary}` :
-                    `4px solid ${colors.surface}`
+                    `2px solid ${colors.textSecondary}` :
+                    `2px solid ${colors.darkBorder}`
                 }}
                 titleStyle={{
                     color: colors.textSecondary,
@@ -58,7 +58,6 @@ const styles: {[key: string]: React.CSSProperties} = {
         alignItems: 'center',
     },
     category: {
-        border: `4px solid ${colors.surface}`,
         backgroundColor: colors.background,
         width: '70%',
         padding: 10,

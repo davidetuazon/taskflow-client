@@ -2,7 +2,7 @@ import React, { SetStateAction, useEffect, useState } from "react";
 import { useAuth } from "../../../providers/AuthProvider";
 import { useMediaQuery } from "react-responsive";
 import colors from "../../../constants/colors";
-import { createTask, deleteTask, fetchTask, markTaskDone, updateTask } from "../../../services/api";
+import { createTask, deleteTask, markTaskDone, updateTask } from "../../../services/api";
 
 import TaskCard from "./TaskCard";
 import GridHeader from "./GridHeader";
@@ -23,7 +23,7 @@ const filterCycle: filterOption[] = ['status', 'todo', 'in-progress', 'done'];
 
 export default function MainGrid(props: Props) {
     const { task, setTask } = props;
-    const isBigScreen = useMediaQuery({ minWidth: 769 });
+    const isBigScreen = useMediaQuery({ minWidth: 768 });
  
     const [sortState, setSortState] = useState<SortOption>('dueDate');
     const [filterState, setFilterState] = useState<filterOption>('status');

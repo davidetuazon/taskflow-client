@@ -44,18 +44,18 @@ const styles: {[key: string]: React.CSSProperties} = {
     },
     heading: {
         fontSize: typography.heading,
-        fontFamily: 'Poppins-Black',
+        fontFamily: 'Poppins-SemiBold',
     },
     title: {
         fontSize: typography.title,
-        fontFamily: 'Poppins-Black',
+        fontFamily: 'Poppins-SemiBold',
     },
     subtitle: {
         fontSize: typography.subtitle,
-        fontFamily: 'Poppins-Black',
+        fontFamily: 'Poppins-SemiBold',
     },
     caption: {
         fontSize: typography.caption,
-        fontFamily: 'Poppins-Black',
+        fontFamily: 'Poppins-SemiBold',
     },
 }

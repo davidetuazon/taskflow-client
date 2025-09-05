@@ -6,13 +6,14 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  color: #E5E7EB;
 }
 
 html, body, #root {
   height: 100%;
   margin: 0;
   padding: 0;
-  background-color: #F9FAFB;
+  background-color: #111827;
   /* background-image: url('./assets/TaskFlowOverlay.png');
   background-size: cover;
   background-repeat: no-repeat;

@@ -12,7 +12,7 @@ type Props = {
 }
 
 export default function FilterOption(props: Props) {
-    const isBigScreen = useMediaQuery({ minWidth: 769 });
+    const isBigScreen = useMediaQuery({ minWidth: 768 });
 
     return (
         <div style={Object.assign({}, isBigScreen ? styles.container : styles.smallContainer, props.style)}>

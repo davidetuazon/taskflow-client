@@ -3,9 +3,9 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import { throttle } from "lodash";
 import { useNavigate } from "react-router-dom";
 import colors from "../constants/colors";
-import TaskFlow from '../assets/TaskFlowV2.svg';
 import { mustBeValidEmail, mustNotBeEmptyOrSpace } from "../utils/validators";
 import { register as registerUser } from "../services/api";
+import { toast } from "react-hot-toast";
 
 import Text from "../components/commons/Text";
 import TextInput from "../components/commons/TextInputs";
@@ -22,10 +22,10 @@ type Inputs = {
 }
 
 export default function Register() {
-    const { register, handleSubmit, getValues, formState: { errors, isSubmitting }} = useForm<Inputs>();
+    const { register, trigger, handleSubmit, getValues, reset, setError, formState: { errors, isSubmitting }} = useForm<Inputs>();
     const navigate = useNavigate();
 
-    const onSubmit: SubmitHandler<Inputs> = useCallback(throttle(async (data) => {
+    const onSubmit: SubmitHandler<Inputs> = async (data) => {
         const payload: {
             fullName: string,
             firstName: string,
@@ -41,22 +41,24 @@ export default function Register() {
         }
         try {
             await registerUser(payload);
-            navigate('/login');
-        } catch (e) {
-            console.error({ message: e });
+            toast.success("Registration successful!");
+            reset();
+            setTimeout(() => {
+                navigate('/login');
+            }, 800);
+        } catch (e: any) {
+            if (e.field && e.message) {
+                setError(e.field as keyof Inputs, { type: 'server', message: e.message })
+            } else {
+                toast.error(e.message);
+            }
         }
-    }, 2000, { trailing: true }), []);
+    };
 
     return (
         <div style={styles.root}>
             <Container
-                style={{ 
-                    overflowY: 'auto',
-                    minWidth: '270px',
-                    width: '50%',
-                    margin: 20,
-                    padding: 30,
-                }}
+                style={styles.container}
                 >
                 <Text
                     variant="heading"
@@ -71,7 +73,7 @@ export default function Register() {
                 <form style={styles.form}>
 
                     <TextInput
-                        style={{ marginTop: 25 }}
+                        style={styles.fields}
                         textProps={{
                             placeholder: 'First Name',
                             ...register("firstName", {
@@ -83,7 +85,7 @@ export default function Register() {
                         error = {errors.firstName?.message}
                     />
                     <TextInput
-                        style={{ marginTop: 25 }}
+                        style={styles.fields}
                         textProps={{
                             placeholder: 'Last Name',
                             ...register("lastName", {
@@ -95,7 +97,7 @@ export default function Register() {
                         error = {errors.lastName?.message}
                     />
                     <TextInput
-                        style={{ marginTop: 25 }}
+                        style={styles.fields}
                         textProps={{
                             placeholder: 'Email',
                             type: 'email',
@@ -109,7 +111,7 @@ export default function Register() {
                         error = {errors.email?.message}
                     />
                     <TextInput
-                        style={{ marginTop: 25 }}
+                        style={styles.fields}
                         textProps={{
                             placeholder: 'Password',
                             type: 'password',
@@ -119,11 +121,15 @@ export default function Register() {
                                     mustBeEightOrMoreCharacters: (val:string) => val.length >= 8 || "Password must be at least 8 characters"
                                 },
                             }),
+                            onChange: (e) => {
+                                register('password').onChange(e);
+                                trigger('password');
+                            }
                         }}
                         error = {errors.password?.message}
                     />
                     <TextInput
-                        style={{ marginTop: 25 }}
+                        style={styles.fields}
                         textProps={{
                             placeholder: 'Confirm Password',
                             type: 'password',
@@ -134,12 +140,19 @@ export default function Register() {
                                     (val:string) => val === getValues('password') || "Password does not match"
                                 },
                             }),
+                            onChange: (e) => {
+                                register('confirmPassword').onChange(e);
+                                trigger('confirmPassword');
+                            }
                         }}
                         error = {errors.confirmPassword?.message}
                     />
-
                     <div style={styles.footer}>
-                        <Button title="Submit" onButtonPress={handleSubmit(onSubmit)} disabled={isSubmitting} />
+                        <Button
+                            title="Submit"
+                            onButtonPress={handleSubmit(onSubmit)}
+                            disabled={isSubmitting}
+                        />
                     </div>
                 </form>
             </Container>
@@ -156,15 +169,21 @@ const styles: {[key: string]: React.CSSProperties} = {
         justifyContent: 'center',
         alignItems: 'center',
         overflowY: 'auto',
-    //     backgroundImage: `url(${TaskFlow})`,
-    //     backgroundSize: 'cover',
-    //     backgroundRepeat: 'no-repeat',
-    //     backgroundPosition: 'center',
+    },
+    container: {
+        overflowY: 'auto',
+        minWidth: '270px',
+        width: '50%',
+        margin: 20,
+        padding: 30,
+        border: `2px solid ${colors.darkBorder}`
     },
     footer: {
         // border: '1px solid red',
-        // width: '100%',
         marginTop: 25,
         justifyItems: 'center',
+    },
+    fields: {
+        marginTop: 25,
     }
 }

@@ -13,17 +13,17 @@ export default function TopBar(props: Props) {
     const isBigScreen = useMediaQuery({ minWidth: 796 });
     return (
         <div style={styles.container}>
-            <TopBarLeft style={
-                            isBigScreen ?
-                            { flex: 1, paddingLeft: 20, } :
-                            { padding: 5 }}
-            />
-            <TopBarMid style={
-                            isBigScreen ?
-                            {} :
-                            { flex: 1, padding: 5, }}
-            />
-            <TopBarRight style={Object.assign({}, {flex: isBigScreen ? 1 : 'none'}, styles.topbarRight)} />
+            <TopBarLeft />
+            <div style={{ display: 'flex', flexDirection: 'row' }}>
+                <TopBarMid
+                    style={
+                        isBigScreen ?
+                        { flex: 1 } :
+                        { flex: 'none' }
+                    }
+                />
+                <TopBarRight style={Object.assign({}, styles.topbarRight)} />
+            </div>
         </div>
     );
 }
@@ -33,9 +33,13 @@ const styles: {[key: string]: React.CSSProperties} = {
         // border: '1px solid red',
         display: 'flex',
         flexDirection: 'row',
+        margin: 0,
+        padding: '0px 20px',
+        flex: 1,
+        justifyContent: 'space-between',
+        minHeight: '50px',
     },
     topbarRight: {
-        paddingRight: 20,
-        paddingLeft: 5,
+        paddingLeft: 20,
     }
 }

@@ -19,7 +19,7 @@ type Props = {
 }
 
 export default function GridHeader(props: Props) {
-    const isBigScreen = useMediaQuery({ minWidth: 769 });
+    const isBigScreen = useMediaQuery({ minWidth: 768 });
     const location = useLocation();
     const navigate = useNavigate();
 

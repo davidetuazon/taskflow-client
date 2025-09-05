@@ -1,51 +1,65 @@
-import React, { useEffect } from "react";
+import React from "react";
 import Text from "../../commons/Text";
 import DueTodayCard from "./DueTodayCard";
 import InProgressCard from "./InProgressCard";
-import CompletedCard from "./CompletedCard";
+import InReviewCard from "./CompletedCard";
 import OverdueCard from "./OverdueCard";
 
 import { useAuth } from "../../../providers/AuthProvider";
 import { useMediaQuery } from "react-responsive";
-import TopBarMid from "../topbar/TopBarMid";
+import Feed from '../feed/Feed';
 
 type Props = {
     style?: React.CSSProperties,
     children?: any,
-    Task: any,
+    overview: any,
+    filterState: any,
+    applyFilter: () => void,
+    getFeedTask: (filter: string) => void | Promise<void>,
+    feed: any[],
 }
 
 export default function OverviewGrid(props: Props) {
-    const isBigScreen = useMediaQuery({ minWidth: 769 });
+    const isBigScreen = useMediaQuery({ minWidth: 768 });
     const { user } = useAuth();
+    const { done, dueToday, inProgress, inReview, overDue } = props.overview;
 
     return (
         <div style={ Object.assign({}, styles.container, props.style) }>
             <div style={{
                 ...styles.greetings,
-                paddingTop: isBigScreen ? 30 : 5,
-                paddingLeft: 20
+                margin: isBigScreen ? 0 : 10
                 }}
             >
                 <Text
-                    variant={isBigScreen ? "heading" : "title"}
-                    style={{ padding: 0, margin: 0, }}
+                    variant={isBigScreen ? "title" : "subtitle"}
+                    style={styles.text}
                 >
                     Welcome back, {user?.firstName}!
                 </Text>
                 <Text
-                    variant={isBigScreen ? "title" : "subtitle"}
-                    style={{ padding: 0, margin: 0, }}
+                    variant={isBigScreen ? "subtitle" : "caption"}
+                    style={styles.text}
                 >
                     Here's what's on your plate today.
                 </Text>
             </div>
             <div style={isBigScreen ? styles.statsBigScreen : styles.stats}>
-                <DueTodayCard Task={props.Task} />
-                <InProgressCard Task={props.Task} />
-                <CompletedCard Task={props.Task} />
-                <OverdueCard Task={props.Task} />
+                <DueTodayCard overview={dueToday} />
+                <InProgressCard overview={inProgress} />
+                <InReviewCard overview={inReview} />
+                <OverdueCard overview={overDue} />
             </div>
+            <Feed
+                filterState={props.filterState}
+                applyFilter={props.applyFilter}
+                getFeedTask={props.getFeedTask}
+                feed={props.feed}
+                style={{
+                ...styles.feed,
+                margin: isBigScreen ? 0 : 10
+                }}
+            />
         </div>
     );
 }
@@ -53,34 +67,38 @@ export default function OverviewGrid(props: Props) {
 const styles: {[key: string]: React.CSSProperties} = {
     container: {
         // border: '1px solid red',
-        width: '100%',
         display: 'flex',
-        flexDirection: 'row',
-    },
-    topbarMid: {
-        // border: '1px solid red',
-        padding: '0px 20px',
+        flex: 1,
+        flexDirection: 'column',
+        justifyContent: 'flex-start',
     },
     greetings: {
         // border: '1px solid red',
         display: 'flex',
         flexDirection: 'column',
-        minWidth: '300px',
     },
     statsBigScreen: {
         // border: '1px solid red',
         display: 'flex',
-        flex: 1,
         flexDirection: 'row',
-        justifyContent: 'flex-end',
-        // padding: 20,
+        justifyContent: 'center',
+        flexWrap: 'wrap',
+        gap: 20,
     },
     stats: {
         // border: '1px solid red',
         display: 'flex',
-        flex: 1,
         flexDirection: 'row',
         justifyContent: 'space-evenly',
-        padding: 10,
+        height: 'auto',
+        margin: '20px 10px',
+        gap: 5
+    },
+    feed: {
+        // border: '1px solid red',
+    },
+    text: {
+        // border: '1px solid red',
+        margin: '5px 0px'
     }
 }
