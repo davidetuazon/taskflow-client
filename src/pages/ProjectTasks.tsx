@@ -5,10 +5,11 @@ import TopBar from "../components/home/topbar/TopBar";
 import Text from "../components/commons/Text";
 import { Link, useParams } from "react-router-dom";
 import { getProject, listTask } from "../services/api";
-import ProjectDetails from "../components/project/ProjectDetails";
+import ProjectDetail from "../components/project/ProjectDetail";
 import TaskList from "../components/project/TaskList";
 import TaskListOptions from "../components/project/TaskListOptions";
 import TaskCreateForm from "../components/project/TaskCreateForm";
+import ProjectDetailSettings from "../components/project/ProjectDetailSettings";
 
 type filterOption = 'default' | 'overdue' | 'today' | 'upcoming' | 'in-progress' | 'in-review';
 type sortOption = 'default' | 'ascending' | 'descending';
@@ -20,7 +21,7 @@ export default function ProjectTasks() {
 
     const [filterState, setFilterState] = useState<filterOption>('default');
     const [sortState, setSortState] = useState<sortOption>('default');
-    const [isOpen, setIsOpen] = useState<'filter' | 'sort' | null>(null);
+    const [isOpen, setIsOpen] = useState<'filter' | 'sort' | 'settings' | null>(null);
 
     const [isHovered, setIsHovered] = useState<string | null>(null);
 
@@ -33,7 +34,7 @@ export default function ProjectTasks() {
             const res = await listTask(slug, {filter: filterState, sort: sortState});
             setTask(res.docs);
         } catch (e) {
-            console.error("Failed to API call: ", e);
+            console.error("Failed fetch: ", e);
         }
     }
 
@@ -50,6 +51,14 @@ export default function ProjectTasks() {
         return () => document.removeEventListener('click', handleClick);
     }, []);
 
+    const onClose = () => {
+        setIsOpen(null);
+    }
+
+    useEffect(() => {
+        console.log(project);
+    }, [project]);
+
     return (
         <div style={styles.root}>
             <div style={styles.header}>
@@ -63,6 +72,7 @@ export default function ProjectTasks() {
                     >
                         <Link
                             to={`/projects/${project.slug}/tasks`}
+                            onClick={() => init()}
                             style={{
                                 color: colors.textPrimary,
                                 textDecoration: isHovered === project.slug ? 'underline' : 'none',
@@ -70,7 +80,7 @@ export default function ProjectTasks() {
                             onMouseEnter={() => setIsHovered(project.slug)}
                             onMouseLeave={() => setIsHovered(null)}
                         >
-                            {project.title}
+                           {project?.owner?.email.split('@')[0]}/{project.slug}
                         </Link>
                     </Text>
                 </div>
@@ -88,11 +98,28 @@ export default function ProjectTasks() {
                         <TaskList task={task} />
                     </div>
                     <div style={styles.sideSection}>
-                        <ProjectDetails project={project} />
-                        <TaskCreateForm project={project} setTask={setTask} />
+                        <ProjectDetail
+                            project={project}
+                            isOpen={isOpen}
+                            setIsOpen={setIsOpen}
+                        />
+                        <TaskCreateForm
+                            project={project}
+                            setTask={setTask}
+                        />
                     </div>
                 </div>
             </div>
+             {isOpen === 'settings' && (
+                <div style={styles.overlay}>
+                    <ProjectDetailSettings
+                        project={project}
+                        setProject={setProject}
+                        isOpen={isOpen}
+                        onClose={onClose}
+                    />
+                </div>
+            )}
         </div>
     );
 }
@@ -122,7 +149,7 @@ const styles: {[key: string]: React.CSSProperties} = {
         flexDirection: 'column',
         width: '75%',
         padding: 10,
-        height: 'inherit',
+        height: 'auto',
         marginBottom: 10,
     },
     title: {
@@ -166,7 +193,23 @@ const styles: {[key: string]: React.CSSProperties} = {
         // border: '1px solid red',
         display: 'flex',
         flexDirection: 'column',
-        width: '40%',
+        width: '45%',
         // padding: 10,
+    },
+    overlay: {
+        // border: '1px solid red',
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        display: 'flex',
+        zIndex: 20,
+        width: '100vw',
+        height: '100vh',
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: 'rgba(48, 48, 48, 0.2)',
+        // transition: 'opacity 0.3s ease',
+        // backdropFilter: 'blur(1px)',
+        // WebkitBackdropFilter: 'blur(1px)',
     }
 }

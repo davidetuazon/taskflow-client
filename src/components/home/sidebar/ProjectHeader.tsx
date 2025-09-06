@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import colors from "../../../constants/colors";
 import typography from "../../../constants/typography";
 import { useMediaQuery } from "react-responsive";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import Text from "../../commons/Text";
 import Button from "../../commons/Button";
@@ -19,17 +19,26 @@ export default function ProjectHeader() {
                 Projects
             </Text>
             {isBigScreen && (
-                <Button
-                    title="New"
-                    style={{
-                        ...styles.button,
-                        backgroundColor: isHovered === 'new' ?colors.primaryLight : colors.primary,
-                    }}
-                    titleStyle={styles.buttonText}
-                    onButtonPress={() =>navigate('/projects')}
-                    onMouseEnter={() => setIsHovered('new')}
-                    onMouseLeave={() => setIsHovered(null)}
-                />
+                <Link
+                    to={'/projects'}
+                    style={styles.link}
+                >
+                    <div
+                        style={{
+                            ...styles.button,
+                            backgroundColor: isHovered === 'new' ?colors.primaryLight : colors.primary,
+                        }}
+                        onMouseEnter={() => setIsHovered('new')}
+                        onMouseLeave={() => setIsHovered(null)}
+                    >
+                        <Text
+                            variant="subtitle"
+                            style={styles.text}
+                        >
+                            New
+                        </Text>
+                    </div>
+                </Link>
             )}
         </div>
     )
@@ -49,15 +58,17 @@ const styles : {[key: string]: React.CSSProperties} = {
     },
     button: {
         margin: '10px 0px',
-        padding: '5px 0px',
+        padding: '5px 15px',
         width: 'auto',
         borderRadius: '8px',
         cursor: 'pointer',
     },
     text: {
-        fontSize: typography.subtitle,
-        color: colors.textPrimary,
-        padding: 0,
         margin: 0,
+    },
+    link: {
+        // border: '1px solid red',
+        color: colors.textPrimary,
+        textDecoration: 'none',
     }
 }

@@ -21,7 +21,7 @@ type Props = {
 
 type Inputs = {
     title: string,
-    description?: string,
+    description: string,
     dueDate: string,
     assignedTo: string,
 }
@@ -38,7 +38,7 @@ export default function TaskCreateForm(props: Props) {
         defaultValues: {
             dueDate: new Date().toISOString().split('T')[0],
             description: "",
-            assignedTo: ""
+            assignedTo: "",
         }
     });
 
@@ -54,7 +54,7 @@ export default function TaskCreateForm(props: Props) {
             assignedTo: string,
         } = {
             title: data.title,
-            description: data.description || "",
+            description: data.description,
             dueDate: data.dueDate || new Date().toISOString().split('T')[0],
             assignedTo: data.assignedTo || user?._id,
         }
@@ -81,7 +81,7 @@ export default function TaskCreateForm(props: Props) {
                 Create new task
             </Text>
             <p style={styles.p}>
-                <i>Required fields are marked with an asterisk (*).</i>
+                Required fields are marked with an asterisk (*).
             </p>
             <form>
                 <Text
@@ -125,7 +125,7 @@ export default function TaskCreateForm(props: Props) {
                     error = {undefined}
                 />
                 <p style={styles.p}>
-                    {description?.length}/350 characters
+                    {description?.length} / 350 characters
                 </p>
                 <Text
                     variant="subtitle"

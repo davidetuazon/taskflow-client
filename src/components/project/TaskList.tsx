@@ -33,7 +33,7 @@ export default function TaskList(props: Props) {
                                         }}
                                     >
                                         <Link
-                                            to={`/projects/${t.projectId}/tasks/${t._id}`}
+                                            to={`/projects/${t.projectId.slug}/tasks/${t._id}`}
                                             style={{
                                                 color: isHovered === t._id ? colors.primary : colors.textPrimary,
                                                 textDecoration: isHovered === t._id ? 'underline' : 'none',

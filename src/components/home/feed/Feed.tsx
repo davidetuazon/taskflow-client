@@ -63,7 +63,7 @@ export default function Feed(props: Props) {
                                         style={styles.text}
                                     >
                                         <Link
-                                            to={`/projects/${task.projectId}/tasks/${task._id}`}
+                                            to={`/projects/${task.projectId.slug}/tasks/${task._id}`}
                                             style={{
                                                 color: isHovered === task._id ? colors.primary : colors.textPrimary,
                                                 textDecoration: isHovered === task._id ? 'underline' : 'none',

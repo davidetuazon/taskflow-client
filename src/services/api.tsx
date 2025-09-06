@@ -97,6 +97,18 @@ export const createProject = async (params: {
     }
 }
 
+export const updateProject = async (slug: string, params: {
+    title: string,
+    description: string,
+}) => {
+    try {
+        const res = await api.put(`/projects/${slug}`, params, {});
+        return res.data;
+    } catch (e) {
+        throw new Error("Failed to update project details");
+    }
+}
+
 export const getProject = async (slug: string) => {
     try {
         const res = await api.get(`/projects/${slug}`);

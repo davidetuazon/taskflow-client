@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import colors from "../../../constants/colors";
 import { useAuth } from "../../../providers/AuthProvider";
 import { Link } from "react-router-dom";
@@ -12,7 +12,7 @@ type Props = {
 }
 
 export default function ProjectNameCard(props: Props) {
-    const { title, slug } = props.project;
+    const { slug } = props.project;
     const username = props.project.owner.email.split('@')[0];
     const [isHovered, setIsHovered] = useState<string | null>(null);
 
@@ -29,7 +29,7 @@ export default function ProjectNameCard(props: Props) {
                     onMouseEnter={() => setIsHovered(slug)}
                     onMouseLeave={() => setIsHovered(null)}
                 >
-                    {username}/{title}
+                    {username}/{slug}
                 </Link>            
             </Text>
         </Container>

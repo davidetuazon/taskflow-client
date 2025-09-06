@@ -16,7 +16,7 @@ type Props = {
     sortState: string,
     setSortState: React.Dispatch<React.SetStateAction<sortOption>>,
     isOpen: string | null,
-    setIsOpen: React.Dispatch<React.SetStateAction<'filter' | 'sort' | null>>
+    setIsOpen: React.Dispatch<React.SetStateAction<'filter' | 'sort' | 'settings' | null>>
 }
 
 export default function TaskListOptions(props: Props) {

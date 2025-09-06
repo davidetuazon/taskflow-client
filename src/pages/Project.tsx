@@ -23,8 +23,9 @@ type Inputs = {
 export default function Project() {
     const isBigScreen = useMediaQuery({ minWidth: 768 });
     const { user } = useAuth();
-    const { register, handleSubmit, trigger, setError, formState: { errors, isSubmitting} } = useForm<Inputs>();
     const navigate = useNavigate();
+    const { register, handleSubmit, trigger, watch, setError, formState: { errors, isSubmitting} } = useForm<Inputs>();
+    const description = watch('description', '');
 
     const [isHovered, setIsHovered] = useState<string | null>(null);
 
@@ -41,14 +42,19 @@ export default function Project() {
         // console.log(payload);
         try {
             const newProject = await createProject(payload);
-            const { _id } = newProject;
+            const { slug } = newProject;
             toast.success("Project created succesfully");
             setTimeout(() => {
-                navigate(`/projects/${_id}/tasks`);
+                navigate(`/projects/${slug}/tasks`);
             }, 800)
         } catch (e: any) {
             if (e.message.includes('already exists')) {
-                setError('title', { type: 'manual', message: e.message });
+                setError('title', {
+                    type: 'server',
+                    message: errors.title?.message ?
+                    `${errors.title.message}. Also: ${e.message}` :
+                    e.message,
+                });
             } else {
                  toast.error(e.message);
             }
@@ -70,20 +76,41 @@ export default function Project() {
                     <Text variant="heading" style={{ margin: 0 }}>
                         Create a new project
                     </Text>
-                    <p style={styles.p}>Required fields are marked with an asterisk (*).</p>
+                    <p 
+                        style={styles.p}
+                    >
+                        <i>Required fields are marked with an asterisk (*).</i>
+                    </p>
                 </div>
                 <form style={styles.form}>
                     <div style={{...styles.formMain, flexDirection: isBigScreen ? 'row': 'column' }}>
-                        <div style={{ width: '40%' }}>
-                            <Text variant="caption">
+                        <div 
+                            style={{
+                                width: '40%',
+                            }}
+                        >
+                            <Text
+                                variant="caption"
+                            >
                                 Owner
                             </Text>
-                            <Text variant="subtitle">
-                                {user?.fullName.toLowerCase()}/
+                            <Text
+                                variant="title"
+                                style={{
+                                    // border: '1px solid red',
+                                }}
+                            >
+                                {user?.email.split('@')[0]}/
                             </Text>
                         </div>
-                        <div style={{ width: '100%'}}>
-                            <Text variant="caption">
+                        <div 
+                            style={{
+                                width: '100%',
+                            }}
+                        >
+                            <Text
+                                variant="caption"
+                            >
                                 Project name *
                             </Text>
                             <TextInput
@@ -102,22 +129,41 @@ export default function Project() {
                                 }}
                                 error = {errors.title?.message}
                             />
-                            {/* <p style={styles.p}>
-                                The project name can only contain ASCII letters, digits, and the characters ., -, and _.
+                            <p 
+                                style={styles.p}
+                            >
+                                Great project names are short and memorable. Any space will be replaced with -.
+                            </p>
+                            {/* <p 
+                                style={styles.p}
+                            >
+                                <i>Any space in the project name will be replaced with _.</i>
                             </p> */}
                         </div>
                     </div>
                     <div style={styles.formSub}>
-                        <Text variant="caption">
+                        <Text
+                                variant="caption"
+                            >
                                 Description
                         </Text>
                         <TextInput
                             style={styles.fields}
                             textProps={{
-                                ...register('description')
+                                ...register('description'),
+                                onChange: (e) => {
+                                    register('description').onChange(e);
+                                    trigger('description');
+                                },
+                                maxLength: 150,
                             }}
                             error = {errors.description?.message}
                         />
+                        <p 
+                            style={styles.p}
+                        >
+                            {description.length} / 150 characters
+                        </p>
                     </div>
                     <div style={styles.formFooter}>
                         <Button
@@ -189,12 +235,13 @@ const styles: {[key: string]: React.CSSProperties} = {
     },
     button: {
         width: 'auto',
-        padding:'10px 20px',
+        padding:'5px 20px',
         margin: '40px 0px',
+        borderRadius: '8px',
     },
     p: {
         // border: '1px solid red',
-        margin: '10px 0px',
+        margin: 0,
         fontSize: typography.caption,
         fontFamily: 'Poppins-Light',
         color: colors.textSecondary,
