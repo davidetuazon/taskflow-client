@@ -12,6 +12,7 @@ import Feed from '../feed/Feed';
 type Props = {
     style?: React.CSSProperties,
     children?: any,
+    username: any,
     overview: any,
     filterState: any,
     applyFilter: () => void,
@@ -51,6 +52,7 @@ export default function OverviewGrid(props: Props) {
                 <OverdueCard overview={overDue} />
             </div>
             <Feed
+                username={props.username}
                 filterState={props.filterState}
                 applyFilter={props.applyFilter}
                 getFeedTask={props.getFeedTask}

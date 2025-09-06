@@ -7,6 +7,7 @@ import TopBarRight from "./TopBarRight";
 
 type Props = {
     style?: React.CSSProperties,
+    username: any,
 }
 
 export default function TopBar(props: Props) {
@@ -22,7 +23,10 @@ export default function TopBar(props: Props) {
                         { flex: 'none' }
                     }
                 />
-                <TopBarRight style={Object.assign({}, styles.topbarRight)} />
+                <TopBarRight
+                    style={Object.assign({}, styles.topbarRight)}
+                    username={props.username}
+                />
             </div>
         </div>
     );

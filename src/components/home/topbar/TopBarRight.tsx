@@ -8,6 +8,7 @@ import { useMediaQuery } from "react-responsive";
 type Props = {
     style?: React.CSSProperties,
     avatarStyle?: React.CSSProperties,
+    username: any,
 }
 
 export default function TopBarRight(props: Props) {
@@ -19,7 +20,7 @@ export default function TopBarRight(props: Props) {
         <div style={ Object.assign({}, styles.container, props.style) }>
             <div style={ Object.assign({}, styles.avatarContainer, props.avatarStyle) }>
                 <Link
-                    to={`/account/settings/${user?._id}`}
+                    to={`/${props.username}/account/settings`}
                     style={isBigScreen ? styles.link : styles.smallLink}
                 >
                     <img

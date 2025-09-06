@@ -10,12 +10,14 @@ import TaskList from "../components/project/TaskList";
 import TaskListOptions from "../components/project/TaskListOptions";
 import TaskCreateForm from "../components/project/TaskCreateForm";
 import ProjectDetailSettings from "../components/project/ProjectDetailSettings";
+import { useAuth } from "../providers/AuthProvider";
 
 type filterOption = 'default' | 'overdue' | 'today' | 'upcoming' | 'in-progress' | 'in-review';
 type sortOption = 'default' | 'ascending' | 'descending';
 
 export default function ProjectTasks() {
-    const { slug } = useParams();
+    const { user } = useAuth();
+    const { username, slug } = useParams();
     const [project, setProject] = useState<any>({});
     const [task, setTask] = useState<any[]>([]);
 
@@ -26,12 +28,12 @@ export default function ProjectTasks() {
     const [isHovered, setIsHovered] = useState<string | null>(null);
 
     const init = async () => {
-        if (!slug) return;
+        if (!slug || !username) return;
         try {
-            const proj = await getProject(slug);
+            const proj = await getProject(username, slug);
             setProject(proj);
 
-            const res = await listTask(slug, {filter: filterState, sort: sortState});
+            const res = await listTask(username, slug, {filter: filterState, sort: sortState});
             setTask(res.docs);
         } catch (e) {
             console.error("Failed fetch: ", e);
@@ -55,14 +57,10 @@ export default function ProjectTasks() {
         setIsOpen(null);
     }
 
-    useEffect(() => {
-        console.log(project);
-    }, [project]);
-
     return (
         <div style={styles.root}>
             <div style={styles.header}>
-                <TopBar />
+                <TopBar username={user?.username} />
             </div>
             <div style={styles.body}>
                 <div style={styles.title}>
@@ -71,7 +69,7 @@ export default function ProjectTasks() {
                         style={{ margin: 0 }}
                     >
                         <Link
-                            to={`/projects/${project.slug}/tasks`}
+                            to={`/${username}/${project.slug}/tasks`}
                             onClick={() => init()}
                             style={{
                                 color: colors.textPrimary,
@@ -95,7 +93,10 @@ export default function ProjectTasks() {
                             isOpen={isOpen}
                             setIsOpen={setIsOpen}
                         />
-                        <TaskList task={task} />
+                        <TaskList
+                            username={username}
+                            task={task}
+                        />
                     </div>
                     <div style={styles.sideSection}>
                         <ProjectDetail
@@ -104,6 +105,7 @@ export default function ProjectTasks() {
                             setIsOpen={setIsOpen}
                         />
                         <TaskCreateForm
+                            username={username}
                             project={project}
                             setTask={setTask}
                         />

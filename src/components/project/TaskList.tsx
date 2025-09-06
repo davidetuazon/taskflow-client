@@ -7,6 +7,7 @@ import { Link } from "react-router-dom";
 
 type Props = {
     style?: React.CSSProperties,
+    username: any,
     task: any[],
 }
 
@@ -33,7 +34,7 @@ export default function TaskList(props: Props) {
                                         }}
                                     >
                                         <Link
-                                            to={`/projects/${t.projectId.slug}/tasks/${t._id}`}
+                                            to={`/${props.username}/${t.projectId.slug}/${t._id}`}
                                             style={{
                                                 color: isHovered === t._id ? colors.primary : colors.textPrimary,
                                                 textDecoration: isHovered === t._id ? 'underline' : 'none',

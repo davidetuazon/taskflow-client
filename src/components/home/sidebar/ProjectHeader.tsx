@@ -7,8 +7,12 @@ import { Link, useNavigate } from "react-router-dom";
 import Text from "../../commons/Text";
 import Button from "../../commons/Button";
 
+type Props = {
+    style?: React.CSSProperties,
+    username: any,
+}
 
-export default function ProjectHeader() {
+export default function ProjectHeader(props: Props) {
     const isBigScreen = useMediaQuery({ minWidth: 768});
     const navigate = useNavigate();
     const [isHovered,setIsHovered] = useState<string | null>(null);
@@ -20,7 +24,7 @@ export default function ProjectHeader() {
             </Text>
             {isBigScreen && (
                 <Link
-                    to={'/projects'}
+                    to={`/${props.username}/new`}
                     style={styles.link}
                 >
                     <div

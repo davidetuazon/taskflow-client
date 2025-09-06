@@ -21,6 +21,9 @@ export const useAuth = () => useContext(AuthContext);
 
 export default function AuthProvider(props: Props) {
 
+    const [user, setUser] = useState<any>(null);
+    const [isLogin, setIsLogin] = useState<boolean>(false);
+
     const init = async () => {
         try {
             const res = await me();
@@ -33,9 +36,6 @@ export default function AuthProvider(props: Props) {
     useEffect(() => {
         init();
     }, []);
-
-    const [user, setUser] = useState<any>(null);
-    const [isLogin, setIsLogin] = useState<boolean>(false);
 
     return <AuthContext.Provider
         value={{

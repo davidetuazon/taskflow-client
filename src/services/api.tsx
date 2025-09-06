@@ -62,31 +62,31 @@ export const getTaskOverview = async () => {
     }
 }
 
-export const getFeed = async (option: string) => {
+export const getFeed = async (option: string, username: string) => {
     try {
-        const res = await api.get('/feed', { params: { filter: option, limit: 3 } });
+        const res = await api.get(`/${username}/feed`, { params: { filter: option, limit: 3 } });
         return res.data;
     } catch (e) {
         throw new Error("Failed to fetch feed");
     }
 }
 
-export const fetchProjects = async () => {
+export const fetchProjects = async (username: string) => {
     try {
-        const res = await api.get('/projects');
+        const res = await api.get(`/${username}`);
         return res.data;
     } catch (e) {
         throw new Error("Failed to fetch projects");
     }
 }
 
-export const createProject = async (params: {
+export const createProject = async (username: string, params: {
     title: string,
     description: string,
     members?: string[],
 }) => {
     try {
-        const res = await api.post('/projects', params, {});
+        const res = await api.post(`/${username}/new`, params, {});
         return res.data;
     } catch (e: any) {
         console.log(e);
@@ -97,44 +97,44 @@ export const createProject = async (params: {
     }
 }
 
-export const updateProject = async (slug: string, params: {
+export const updateProject = async (username: string, slug: string, params: {
     title: string,
     description: string,
 }) => {
     try {
-        const res = await api.put(`/projects/${slug}`, params, {});
+        const res = await api.put(`/${username}/${slug}`, params, {});
         return res.data;
     } catch (e) {
         throw new Error("Failed to update project details");
     }
 }
 
-export const getProject = async (slug: string) => {
+export const getProject = async (username: string, slug: string) => {
     try {
-        const res = await api.get(`/projects/${slug}`);
+        const res = await api.get(`/${username}/${slug}`);
         return res.data;
     } catch (e) {
         throw new Error("Failed to get project");
     }
-} 
+}
 
-export const listTask = async (slug: string, params: any) => {
+export const listTask = async (username: string, slug: string, params: any) => {
     try {
-        const res = await api.get(`/projects/${slug}/tasks`, { params });
+        const res = await api.get(`/${username}/${slug}/tasks`, { params });
         return res.data;
     } catch (e) {
         throw new Error("Failed to fetch task list");
     }
 }
 
-export const createTask = async (slug: string, params: {
+export const createTask = async (username: string, slug: string, params: {
     title: string,
     description: string,
     dueDate: string
     assignedTo: string
 }) => {
     try {
-        const res = await api.post(`/projects/${slug}/tasks`, params, {});
+        const res = await api.post(`/${username}/${slug}/tasks`, params, {});
         return res.data;
     } catch (e) {
         throw new Error("Failed to create new task");

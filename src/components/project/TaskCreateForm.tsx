@@ -15,6 +15,7 @@ import Select from "../commons/Select";
 
 type Props = {
     style?: React.CSSProperties,
+    username: any,
     setTask: React.Dispatch<React.SetStateAction<any[]>>,
     project: any,
 }
@@ -46,7 +47,7 @@ export default function TaskCreateForm(props: Props) {
     const [isHovered, setIsHovered] = useState<boolean>(false);
 
     const onSubmit: SubmitHandler<Inputs> = async (data) => {
-        if(!slug) return;
+        if(!slug || !props.username) return;
         const payload: {
             title: string,
             description: string,
@@ -60,7 +61,7 @@ export default function TaskCreateForm(props: Props) {
         }
         // console.log(payload);
         toast.promise(
-            createTask(slug, payload)
+            createTask(props.username, slug, payload)
             .then((response) => {
                 props.setTask(prev => [response, ...prev]);
                 reset();

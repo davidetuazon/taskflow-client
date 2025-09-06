@@ -12,15 +12,14 @@ type Props = {
 }
 
 export default function ProjectNameCard(props: Props) {
-    const { slug } = props.project;
-    const username = props.project.owner.email.split('@')[0];
+    const { slug, owner } = props.project;
     const [isHovered, setIsHovered] = useState<string | null>(null);
-
+    
     return (
         <Container style={styles.container}>
             <Text variant="subtitle" style={styles.text}>
                 <Link
-                    to={`/projects/${slug}/tasks`}
+                    to={`/${owner.username}/${slug}/tasks`}
                     key={slug}
                     style={{
                         color: colors.textPrimary,
@@ -29,7 +28,7 @@ export default function ProjectNameCard(props: Props) {
                     onMouseEnter={() => setIsHovered(slug)}
                     onMouseLeave={() => setIsHovered(null)}
                 >
-                    {username}/{slug}
+                    {owner.username}/{slug}
                 </Link>            
             </Text>
         </Container>
@@ -42,7 +41,6 @@ const styles: {[key: string]: React.CSSProperties} = {
         backgroundColor: colors.surface,
         display: 'flex',
         padding: '0px 10px',
-        cursor: 'pointer',
         alignItems: 'start'
     },
     text: {

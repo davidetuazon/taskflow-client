@@ -11,7 +11,7 @@ import Text from "../components/commons/Text";
 import TextInput from "../components/commons/TextInputs";
 import Button from "../components/commons/Button";
 import { createProject } from "../services/api";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-hot-toast";
 
 type Inputs = {
@@ -23,6 +23,7 @@ type Inputs = {
 export default function Project() {
     const isBigScreen = useMediaQuery({ minWidth: 768 });
     const { user } = useAuth();
+    const { username } = useParams();
     const navigate = useNavigate();
     const { register, handleSubmit, trigger, watch, setError, formState: { errors, isSubmitting} } = useForm<Inputs>();
     const description = watch('description', '');
@@ -30,6 +31,8 @@ export default function Project() {
     const [isHovered, setIsHovered] = useState<string | null>(null);
 
     const onSubmit: SubmitHandler<Inputs> = async (data) => {
+        if (!username) return;
+
         const payload: {
             title: string,
             description: string,
@@ -41,11 +44,11 @@ export default function Project() {
         }
         // console.log(payload);
         try {
-            const newProject = await createProject(payload);
+            const newProject = await createProject(username, payload);
             const { slug } = newProject;
             toast.success("Project created succesfully");
             setTimeout(() => {
-                navigate(`/projects/${slug}/tasks`);
+                navigate(`${username}/projects/${slug}/tasks`);
             }, 800)
         } catch (e: any) {
             if (e.message.includes('already exists')) {

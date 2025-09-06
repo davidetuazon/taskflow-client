@@ -50,7 +50,7 @@ function App() {
             }
           />
           <Route
-            path='/account/settings/:id'
+            path='/:username/account/settings'
             element={
               <RequireAuth>
                 <Account />
@@ -58,7 +58,7 @@ function App() {
             }
           />
           <Route
-            path='/projects'
+            path='/:username/new'
             element={
               <RequireAuth>
                 <Project />
@@ -66,7 +66,7 @@ function App() {
             }
           />
           <Route
-            path='/projects/:slug/tasks'
+            path='/:username/:slug/tasks'
             element={
               <RequireAuth>
                 <ProjectTasks key={location.pathname} />

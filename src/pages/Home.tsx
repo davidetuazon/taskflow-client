@@ -7,6 +7,7 @@ import colors from "../constants/colors";
 import TopBar from "../components/home/topbar/TopBar";
 import OverviewGrid from "../components/home/overview/OverviewGrid";
 import ProjectGrid from "../components/home/sidebar/ProjectGrid";
+import { useParams } from "react-router-dom";
 
 type filterOption = 'overdue' | 'today';
 const fitlerCycle: filterOption[] = ['overdue', 'today'];
@@ -14,6 +15,7 @@ const fitlerCycle: filterOption[] = ['overdue', 'today'];
 export default function Home() {
     const isBigScreen = useMediaQuery({ minWidth: 768 });
     const { setUser } = useAuth();
+    const [username, setUsername] = useState<string |null>(null);
 
     const [project, setProject] = useState<any[]>([]);
     const [overview, setOverview] = useState<any>({});
@@ -25,8 +27,9 @@ export default function Home() {
         try {
             const loggedUser = await me();
             setUser(loggedUser);
+            setUsername(loggedUser?.username);
 
-            const proj = await fetchProjects();
+            const proj = await fetchProjects(loggedUser?.username);
             setProject(proj.docs);
 
             const view = await getTaskOverview();
@@ -38,15 +41,12 @@ export default function Home() {
     };
 
     useEffect(() => {
-        // console.log("Mounted");
         init();
     }, []);
 
     // useEffect(() => {
     //     console.log(project);
-    //     // init();
     // }, [project]);
-
 
     const applyFilter = () => {
         const currIdx = fitlerCycle.indexOf(filterState);
@@ -57,9 +57,10 @@ export default function Home() {
     }
 
     const getFeedTask = async (filter: string) => {
+        if (!username) return;
         const option = filter;
         try {
-            const res = await getFeed(option);
+            const res = await getFeed(option, username);
             setFeed(res);
         } catch (e) {
             throw new Error("Failed to fetch feed");
@@ -67,17 +68,22 @@ export default function Home() {
     }
 
     useEffect(() => {
+        if (!username) return;
         getFeedTask(filterState);
-    }, [filterState]);
+    }, [username, filterState]);
 
     return (
         <div style={styles.root}>
             <div style={styles.header}>
-                <TopBar />
+                <TopBar username={username} />
             </div>
             <div style={{...styles.body, flexDirection: isBigScreen ? 'row' : 'column'}}>
-                <ProjectGrid project={project} />
+                <ProjectGrid
+                    username={username}
+                    project={project}
+                />
                 <OverviewGrid
+                    username={username}
                     overview={overview}
                     filterState={filterState}
                     applyFilter={applyFilter}

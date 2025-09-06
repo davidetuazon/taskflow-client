@@ -1,30 +1,30 @@
-import React from "react";
+import React, { useEffect } from "react";
 import colors from "../../../constants/colors";
-import typography from "../../../constants/typography";
 import { useMediaQuery } from "react-responsive";
-import { useNavigate } from "react-router-dom";
 
 import ProjectHeader from "./ProjectHeader";
 import ProjectNameCard from "./ProjectNameCard";
 
 type Props = {
     style?: React.CSSProperties,
+    username: any,
     project: any,
 }
 
 export default function ProjectGrid(props: Props) {
     const isBigScreen = useMediaQuery({ minWidth: 768});
-    const navigate = useNavigate()
 
     return (
         <div style={isBigScreen ? styles.containerBigScreen : styles.container}>
             <div style={styles.mainCard}>
                 <div style={styles.header}>
-                    <ProjectHeader />
+                    <ProjectHeader
+                    username={props.username}
+                    />
                 </div>
                 <div style={isBigScreen ? styles.body : styles.smallBody}>
                     {props.project.map((p: any) => (
-                            <div key={p._id} onClick={() => navigate(`/projects/${p.slug}/tasks`, { replace: true })}>
+                            <div key={p._id}>
                                 <ProjectNameCard project={p} />
                             </div>
                         )

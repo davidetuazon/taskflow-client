@@ -9,6 +9,7 @@ import Text from "../../commons/Text";
 type Props = {
     style?: React.CSSProperties,
     filterState: any,
+    username: any,
     applyFilter: () => void,
     getFeedTask: (filter: string) => void | Promise<void>,
     feed: any[],
@@ -63,7 +64,7 @@ export default function Feed(props: Props) {
                                         style={styles.text}
                                     >
                                         <Link
-                                            to={`/projects/${task.projectId.slug}/tasks/${task._id}`}
+                                            to={`${props.username}/projects/${task.projectId.slug}/tasks/${task._id}`}
                                             style={{
                                                 color: isHovered === task._id ? colors.primary : colors.textPrimary,
                                                 textDecoration: isHovered === task._id ? 'underline' : 'none',
