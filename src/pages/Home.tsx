@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { fetchProjects, getFeed, getTaskOverview, me } from "../services/api";
+import { listProject, getFeed, getTaskOverview, me } from "../services/api";
 import { useMediaQuery } from "react-responsive";
 import { useAuth } from "../providers/AuthProvider";
 import colors from "../constants/colors";
@@ -29,7 +29,7 @@ export default function Home() {
             setUser(loggedUser);
             setUsername(loggedUser?.username);
 
-            const proj = await fetchProjects(loggedUser?.username);
+            const proj = await listProject(loggedUser?.username);
             setProject(proj.docs);
 
             const view = await getTaskOverview();
@@ -66,7 +66,7 @@ export default function Home() {
             throw new Error("Failed to fetch feed");
         }
     }
-
+    
     useEffect(() => {
         if (!username) return;
         getFeedTask(filterState);
@@ -87,7 +87,6 @@ export default function Home() {
                     overview={overview}
                     filterState={filterState}
                     applyFilter={applyFilter}
-                    getFeedTask={getFeedTask}
                     feed={feed}
                     style={{ margin: isBigScreen ? '40px 30px' : '10px 5px' }}
                 />

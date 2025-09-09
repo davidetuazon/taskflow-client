@@ -15,6 +15,7 @@ import { updateProject } from "../../services/api";
 
 type Props = {
     style?: React.CSSProperties,
+    username: any,
     project: any,
     setProject: React.Dispatch<React.SetStateAction<any>>,
     isOpen: any,
@@ -31,7 +32,7 @@ export default function ProjectDetailSettings(props: Props) {
     const navigate = useNavigate();
     const [isVisible, setIsVisible] = useState<boolean>(false);
     const [isHovered, setIsHovered] = useState<string | null>(null);
-    const { register, handleSubmit, trigger, watch, reset, formState: { errors, isSubmitting } } = useForm<Inputs>({
+    const { register, handleSubmit, trigger, watch, reset, setError, formState: { errors, isSubmitting } } = useForm<Inputs>({
         defaultValues: {
             title: props.project.slug,
             description: props.project.description,
@@ -57,22 +58,29 @@ export default function ProjectDetailSettings(props: Props) {
             description: data.description,
         }
         // console.log(payload);
-        toast.promise(
-            updateProject(slug, payload)
-            .then((response) => {
-                props.setProject(response);
-                reset();
+        try {
+            const res = await updateProject(props.username, slug, payload);
+            props.setProject(res);
+            reset();
+            if (res.slug && res.slug !== slug) {
+                toast.success("Project updated successfully!");
                 props.onClose();
-
-                if (response.slug && response.slug !== slug) {
-                    navigate(`/projects/${response.slug}/tasks`);
-                }
-            }), {
-                loading: 'Updating project details...',
-                success: 'Updated project details',
-                error: 'Failed to update project details. Please try again.'
+                setTimeout(() => {
+                    navigate(`/${props.username}/${res.slug}/tasks`)
+                }, 400);
             }
-        )
+        } catch (e: any) {
+            if (e.message.includes('already exists')) {
+                setError('title', {
+                    type: 'server',
+                    message: errors.title?.message ?
+                        `${errors.title.message}` :
+                        e.message,
+                })
+            } else {
+                toast.error(e.message);
+            }
+        }
     }
 
     return (
@@ -226,7 +234,7 @@ const styles: { [key: string]: React.CSSProperties } = {
         flexDirection: 'row',
         justifyContent: 'flex-end',
         gap: 10,
-        margin: '10px 0px',
+        marginTop: 20,
     },
     cancelBtn: {
         border: `1px solid ${colors.darkBorder}`,

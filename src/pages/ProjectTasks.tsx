@@ -41,8 +41,10 @@ export default function ProjectTasks() {
     }
 
     useEffect(() => {
-        init();
-    }, [slug, filterState, sortState]);
+        if (username && slug) {
+            init();
+        }
+    }, [username, slug, filterState, sortState]);
 
     useEffect(() => {
         function handleClick() {
@@ -70,7 +72,7 @@ export default function ProjectTasks() {
                     >
                         <Link
                             to={`/${username}/${project.slug}/tasks`}
-                            onClick={() => init()}
+                            // onClick={() => init()}
                             style={{
                                 color: colors.textPrimary,
                                 textDecoration: isHovered === project.slug ? 'underline' : 'none',
@@ -78,7 +80,7 @@ export default function ProjectTasks() {
                             onMouseEnter={() => setIsHovered(project.slug)}
                             onMouseLeave={() => setIsHovered(null)}
                         >
-                           {project?.owner?.email.split('@')[0]}/{project.slug}
+                           {project.slug}
                         </Link>
                     </Text>
                 </div>
@@ -115,6 +117,7 @@ export default function ProjectTasks() {
              {isOpen === 'settings' && (
                 <div style={styles.overlay}>
                     <ProjectDetailSettings
+                        username={username}
                         project={project}
                         setProject={setProject}
                         isOpen={isOpen}
@@ -180,7 +183,6 @@ const styles: {[key: string]: React.CSSProperties} = {
         paddingBottom: 20,
         display: 'flex',
         flexDirection: 'row',
-        justifyContent: 'space-between',
         flex: 1,
         gap: 25,
     },

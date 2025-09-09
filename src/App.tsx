@@ -16,8 +16,9 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import Home from './pages/Home';
 import Account from './pages/Account';
-import Project from './pages/Project';
+import ProjectNew from './pages/ProjectNew';
 import ProjectTasks from './pages/ProjectTasks';
+import ProjectTask from './pages/ProjectTask';
 
 
 function App() {
@@ -61,7 +62,7 @@ function App() {
             path='/:username/new'
             element={
               <RequireAuth>
-                <Project />
+                <ProjectNew />
               </RequireAuth>
             }
           />
@@ -70,6 +71,14 @@ function App() {
             element={
               <RequireAuth>
                 <ProjectTasks key={location.pathname} />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path='/:username/:slug/tasks/:id'
+            element={
+              <RequireAuth>
+                <ProjectTask/>
               </RequireAuth>
             }
           />

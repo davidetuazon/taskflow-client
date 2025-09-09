@@ -11,7 +11,6 @@ type Props = {
     filterState: any,
     username: any,
     applyFilter: () => void,
-    getFeedTask: (filter: string) => void | Promise<void>,
     feed: any[],
 }
 
@@ -35,7 +34,6 @@ export default function Feed(props: Props) {
                 }}
                 onClick={() => {
                     props.applyFilter();
-                    props.getFeedTask(props.filterState);
                 }}
                 onMouseEnter={() => setIsHovered(props.filterState)}
                 onMouseLeave={() => setIsHovered(null)}
@@ -64,7 +62,7 @@ export default function Feed(props: Props) {
                                         style={styles.text}
                                     >
                                         <Link
-                                            to={`${props.username}/projects/${task.projectId.slug}/tasks/${task._id}`}
+                                            to={`/${props.username}/${task.projectId.slug}/tasks/${task._id}`}
                                             style={{
                                                 color: isHovered === task._id ? colors.primary : colors.textPrimary,
                                                 textDecoration: isHovered === task._id ? 'underline' : 'none',

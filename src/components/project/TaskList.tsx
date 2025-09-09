@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import colors from "../../constants/colors";
 import typography from "../../constants/typography";
 
@@ -13,7 +13,7 @@ type Props = {
 
 export default function TaskList(props: Props) {
     const [isHovered, setIsHovered] = useState<string | null>(null);
-
+    
     return (
         <div>
             {props.task.length > 0 ? (
@@ -34,7 +34,7 @@ export default function TaskList(props: Props) {
                                         }}
                                     >
                                         <Link
-                                            to={`/${props.username}/${t.projectId.slug}/${t._id}`}
+                                            to={`/${props.username}/${t.projectId.slug}/tasks/${t._id}`}
                                             style={{
                                                 color: isHovered === t._id ? colors.primary : colors.textPrimary,
                                                 textDecoration: isHovered === t._id ? 'underline' : 'none',

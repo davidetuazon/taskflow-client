@@ -16,7 +16,6 @@ type Props = {
     overview: any,
     filterState: any,
     applyFilter: () => void,
-    getFeedTask: (filter: string) => void | Promise<void>,
     feed: any[],
 }
 
@@ -55,7 +54,6 @@ export default function OverviewGrid(props: Props) {
                 username={props.username}
                 filterState={props.filterState}
                 applyFilter={props.applyFilter}
-                getFeedTask={props.getFeedTask}
                 feed={props.feed}
                 style={{
                 ...styles.feed,

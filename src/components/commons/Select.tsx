@@ -5,8 +5,10 @@ import typography from "../../constants/typography";
 import Text from "./Text";
 
 type Props = {
+    style?: React.CSSProperties,
+    selectStyle?: React.CSSProperties,
     value?: string,
-    label: string, 
+    label?: string, 
     options: { value: string; label: string }[];
     onSelect: (value: string) => void,
     textProps?: any,
@@ -18,12 +20,12 @@ export default function Select(props: Props) {
     return (
         <>
             <div
-                style={Object.assign({}, styles.container, props.disabled && styles.disabled, props.error && styles.error)}
+                style={Object.assign({}, styles.container, props.style, props.disabled && styles.disabled, props.error && styles.error)}
             >
                 <select
                     value={props.value ?? ""}
                     disabled={props.disabled}
-                    style={styles.select}
+                    style={Object.assign({}, styles.select, props.selectStyle)}
                     onChange={(event) => props.onSelect(event.target.value)}
                     {...props.textProps}
                 >
@@ -61,7 +63,7 @@ const styles: {[key: string]: React.CSSProperties} = {
   container: {
     border: `2px solid ${colors.darkBorder}`,
     backgroundColor: colors.background,
-    borderRadius: 12,
+    borderRadius: '8px',
     paddingLeft: 15,
     paddingRight: 15,
     height: 30,
@@ -80,10 +82,11 @@ const styles: {[key: string]: React.CSSProperties} = {
     backgroundColor: colors.background,
     outline: 'none',
     border: 'none',
-    marginTop: 5,
+    marginTop: 2.5,
   },
   option: {
-    color: colors.textSecondary,
+    color: colors.textPrimary,
+    border: 'none',
   },
   error: {
     border: `2px solid ${colors.error}`,

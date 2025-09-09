@@ -166,7 +166,7 @@ export default function TaskCreateForm(props: Props) {
                         titleStyle={{ fontSize: typography.subtitle }}
                         style={{
                             ...styles.button,
-                            backgroundColor: isHovered ? colors.darkBorder : colors.background,
+                            backgroundColor: isHovered ? colors.primaryLight : colors.primary,
                         }}
                         onMouseEnter={() => setIsHovered(true)}
                         onMouseLeave={() => setIsHovered(false)}
@@ -187,7 +187,7 @@ const styles: {[key: string]: React.CSSProperties} = {
         marginTop: 20,
         display: 'flex',
         flexDirection: 'column',
-        backgroundColor: colors.background
+        backgroundColor: colors.background,
     },
     text: {
         // border: '1px solid red',
@@ -203,12 +203,13 @@ const styles: {[key: string]: React.CSSProperties} = {
         color: colors.textSecondary,
     },
     fields: {
-        height: 35,
+        height: 30,
+        borderRadius: '8px'
         // border: `2px solid ${colors.darkBorder}`,
     },
     dateField: {
         border: `2px solid ${colors.darkBorder}`,
-        borderRadius: '13px',
+        borderRadius: '8px',
         paddingLeft: 10,
         paddingRight: 10,
         backgroundColor: 'transparent',

@@ -1,9 +1,10 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useMediaQuery } from "react-responsive";
 
 import TopBarLeft from "./TopBarLeft";
 import TopBarMid from "./TopBarMid";
 import TopBarRight from "./TopBarRight";
+import { useAuth } from "../../../providers/AuthProvider";
 
 type Props = {
     style?: React.CSSProperties,
@@ -12,6 +13,7 @@ type Props = {
 
 export default function TopBar(props: Props) {
     const isBigScreen = useMediaQuery({ minWidth: 796 });
+
     return (
         <div style={styles.container}>
             <TopBarLeft />

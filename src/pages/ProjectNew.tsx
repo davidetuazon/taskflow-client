@@ -55,8 +55,8 @@ export default function Project() {
                 setError('title', {
                     type: 'server',
                     message: errors.title?.message ?
-                    `${errors.title.message}. Also: ${e.message}` :
-                    e.message,
+                        `${errors.title.message}. Also: ${e.message}` :
+                        e.message,
                 });
             } else {
                  toast.error(e.message);
@@ -67,7 +67,9 @@ export default function Project() {
     return (
         <div style={styles.root}>
             <div style={styles.header}>
-                <TopBar />
+                <TopBar
+                    username={username}
+                />
             </div>
             <div 
                 style={{

@@ -71,7 +71,7 @@ export const getFeed = async (option: string, username: string) => {
     }
 }
 
-export const fetchProjects = async (username: string) => {
+export const listProject = async (username: string) => {
     try {
         const res = await api.get(`/${username}`);
         return res.data;
@@ -89,7 +89,6 @@ export const createProject = async (username: string, params: {
         const res = await api.post(`/${username}/new`, params, {});
         return res.data;
     } catch (e: any) {
-        console.log(e);
         if (e.response?.data?.error) {
             throw new Error(e.response.data.error);
         }
@@ -104,7 +103,10 @@ export const updateProject = async (username: string, slug: string, params: {
     try {
         const res = await api.put(`/${username}/${slug}`, params, {});
         return res.data;
-    } catch (e) {
+    } catch (e: any) {
+        if (e.response?.data?.error) {
+            throw new Error(e.response.data.error);
+        }
         throw new Error("Failed to update project details");
     }
 }
@@ -141,6 +143,39 @@ export const createTask = async (username: string, slug: string, params: {
     }
 }
 
+export const getTask = async (username: string, slug: string, id: string) => {
+    try {
+        const res = await api.get(`/${username}/${slug}/tasks/${id}`);
+        return res.data;
+    } catch (e) {
+        throw new Error("Failed to fetch task");
+    }
+}
+
+export const updateTask = async (username: string, slug: string, id: string, updates: {
+    title: string,
+    status: string,
+    dueDate: string,
+    description: string,
+}) => {
+    try {
+        const res = await api.put(`/${username}/${slug}/tasks/${id}`, updates, {});
+        return res.data;
+    } catch (e) {
+        throw new Error("Failed to update task");
+    }
+}
+
+export const getTaskActivityLog = async (username: string, slug: string, id: string) => {
+    try {
+        const res = await api.get(`/${username}/${slug}/tasks/${id}/logs`);
+        return res.data;
+    } catch (e) {
+        throw new Error("Failed to fetch activity logs");
+    }
+}
+
+
 // export const getMembers = async (id: string, members: any) => {
 //     try {
 //         const res = await api.get(`/projects/${id}/members`, members);
@@ -149,15 +184,6 @@ export const createTask = async (username: string, slug: string, params: {
 //         throw new Error("Failed to fetch members");
 //     }
 // }
-
-
-
-
-
-
-
-
-
 
 export const searchTask = async (query: string) => {
     if (!query) return [];
@@ -169,37 +195,37 @@ export const searchTask = async (query: string) => {
     }
 }
 
-export const markTaskDone = async (id: string, params: { status: string }) => {
-    try {
-        const res = await api.put(`/tasks/${id}`, params, {});
-        return res.data;
-    } catch (e) {
-        throw new Error("Failed task status update");
-    }
-}
+// export const markTaskDone = async (id: string, params: { status: string }) => {
+//     try {
+//         const res = await api.put(`/tasks/${id}`, params, {});
+//         return res.data;
+//     } catch (e) {
+//         throw new Error("Failed task status update");
+//     }
+// }
 
-export const deleteTask = async (id: string) => {
-    try {
-        const res = await api.delete(`/tasks/${id}`);
-        return res.data;
-    } catch (e) {
-        throw new Error("Failed to delete task");
-    }
-}
+// export const deleteTask = async (id: string) => {
+//     try {
+//         const res = await api.delete(`/tasks/${id}`);
+//         return res.data;
+//     } catch (e) {
+//         throw new Error("Failed to delete task");
+//     }
+// }
 
-export const updateTask = async (id: string, params: {
-    title: string,
-    description: string,
-    status: string,
-    dueDate: string,
-}) => {
-    try {
-        const res = await api.put(`/tasks/${id}`, params, {});
-        return res.data;
-    } catch (e) {
-        throw new Error("Failed to update task");
-    }
-}
+// export const updateTask = async (id: string, params: {
+//     title: string,
+//     description: string,
+//     status: string,
+//     dueDate: string,
+// }) => {
+//     try {
+//         const res = await api.put(`/tasks/${id}`, params, {});
+//         return res.data;
+//     } catch (e) {
+//         throw new Error("Failed to update task");
+//     }
+// }
 
 // export const createTask = async (params: {
 //     title: string,
