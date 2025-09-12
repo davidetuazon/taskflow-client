@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { searchTask } from "../../../services/api";
+import { searchProject } from "../../../services/api";
 import TextInput from "../../commons/TextInputs";
 import Button from "../../commons/Button";
 import colors from "../../../constants/colors";
 import typography from "../../../constants/typography";
 import { useMediaQuery } from "react-responsive";
+import { useNavigate } from "react-router-dom";
 
 type Props = {
     style?: React.CSSProperties,
@@ -12,15 +13,17 @@ type Props = {
 
 export default function TopBarMid(props: Props) {
     const isBigScreen = useMediaQuery({ minWidth: 768 });
+    const navigate = useNavigate();
     const [query, setQuery] = useState<string>('');
     const [results, setResults] = useState<any[]>([]);
+    const [isHovered, setIsHovered] = useState<string | null>(null)
     
     const searchResults = async () => {
         if (!query) {
             setResults([]);
             return;
         }
-        const res = await searchTask(query);
+        const res = await searchProject(query);
         setResults(res);
     };
 
@@ -47,15 +50,24 @@ export default function TopBarMid(props: Props) {
             )}
             {(results?.length ?? 0) > 0 && (
                 <div style={styles.dropdown}>
-                    {results.map((task:any) => (
+                    {results.map((proj:any, idx: number) => (
                         <div
-                            key={task._id}
+                            key={proj._id}
                         >
                             <Button
-                                title={task.title}
-                                style={styles.button}
+                                title={proj.title}
+                                style={{
+                                    ...styles.button,
+                                    borderTopLeftRadius: idx === 0 ? '8px': 0,
+                                    borderTopRightRadius: idx === 0 ? '8px': 0,
+                                    borderBottomLeftRadius: idx === results.length - 1 ? '8px': 0,
+                                    borderBottomRightRadius: idx === results.length - 1 ? '8px': 0,
+                                    backgroundColor: isHovered === proj.title ? colors.surface : colors.background,
+                                }}
                                 titleStyle={styles.results}
-                                onButtonPress={() => alert(task.description)}
+                                onMouseEnter={() => setIsHovered(proj.title)}
+                                onMouseLeave={() => setIsHovered(null)}
+                                onButtonPress={() => navigate(`/${proj.owner?.username}/${proj.slug}/tasks`)}
                             />
                         </div>
                     ))}
@@ -79,7 +91,7 @@ const styles: {[key: string]: React.CSSProperties} = {
     searchbar: {
         border: `1px solid ${colors.darkBorder}`,
         height: 30,
-        borderRadius: '8px'
+        borderRadius: '8px',
     },
     searchbarIcon: {
         border: `1px solid ${colors.darkBorder}`,
@@ -87,7 +99,7 @@ const styles: {[key: string]: React.CSSProperties} = {
     dropdown: {
         position: 'absolute',
         top: '85%',
-        left: '0',
+        left: '7.5%',
         display: 'flex',
         flexDirection: 'column',
         flex: 1,
@@ -100,7 +112,9 @@ const styles: {[key: string]: React.CSSProperties} = {
     button: {
         // border: '1px solid red',
         backgroundColor: colors.background,
-        padding: 15,
+        width: 'auto',
+        margin: '0px 0px',
+        padding: '10px 10px',
     },
     results: {
         // border: 'none',

@@ -20,7 +20,7 @@ export default function TopBarRight(props: Props) {
         <div style={ Object.assign({}, styles.container, props.style) }>
             <div style={ Object.assign({}, styles.avatarContainer, props.avatarStyle) }>
                 <Link
-                    to={`/${props.username}/account/settings`}
+                    to={`/${props.username}/account/profile`}
                     style={isBigScreen ? styles.link : styles.smallLink}
                 >
                     <img

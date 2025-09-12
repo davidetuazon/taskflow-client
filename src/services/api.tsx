@@ -166,6 +166,15 @@ export const updateTask = async (username: string, slug: string, id: string, upd
     }
 }
 
+export const deleteTask = async (username: string, slug: string, id: string) => {
+    try {
+        const res = await api.delete(`/${username}/${slug}/tasks/${id}`);
+        return res.data;
+    } catch (e) {
+        throw new Error("Failed to delete task");
+    }
+}
+
 export const getTaskActivityLog = async (username: string, slug: string, id: string) => {
     try {
         const res = await api.get(`/${username}/${slug}/tasks/${id}/logs`);
@@ -175,68 +184,24 @@ export const getTaskActivityLog = async (username: string, slug: string, id: str
     }
 }
 
-
-// export const getMembers = async (id: string, members: any) => {
-//     try {
-//         const res = await api.get(`/projects/${id}/members`, members);
-//         return res.data;
-//     } catch (e) {
-//         throw new Error("Failed to fetch members");
-//     }
-// }
-
-export const searchTask = async (query: string) => {
-    if (!query) return [];
+export const updatePublicProfile = async (username: string, params: {
+    firstName: string,
+    lastName: string,
+}) => {
     try {
-        const res = await api.get(`/tasks/search?search=${query}`);
+        const res = await api.patch(`${username}/account/profile`, params, {});
         return res.data;
     } catch (e) {
-        throw new Error("Failed task look up");
+        throw new Error("Failed to update public profile");
     }
 }
 
-// export const markTaskDone = async (id: string, params: { status: string }) => {
-//     try {
-//         const res = await api.put(`/tasks/${id}`, params, {});
-//         return res.data;
-//     } catch (e) {
-//         throw new Error("Failed task status update");
-//     }
-// }
-
-// export const deleteTask = async (id: string) => {
-//     try {
-//         const res = await api.delete(`/tasks/${id}`);
-//         return res.data;
-//     } catch (e) {
-//         throw new Error("Failed to delete task");
-//     }
-// }
-
-// export const updateTask = async (id: string, params: {
-//     title: string,
-//     description: string,
-//     status: string,
-//     dueDate: string,
-// }) => {
-//     try {
-//         const res = await api.put(`/tasks/${id}`, params, {});
-//         return res.data;
-//     } catch (e) {
-//         throw new Error("Failed to update task");
-//     }
-// }
-
-// export const createTask = async (params: {
-//     title: string,
-//     description: string,
-//     status: string,
-//     dueDate: string,
-// }) => {
-//     try {
-//         const res = await api.post('/tasks', params, {});
-//         return res.data;
-//     } catch (e) {
-//         throw new Error("Failed to create new task");
-//     }
-// }
+export const searchProject = async (query: string) => {
+    if (!query) return [];
+    try {
+        const res = await api.get(`/projects/search?query=${query}`, {});
+        return res.data;
+    } catch (e) {
+        throw new Error("Failed project look up");
+    }
+}

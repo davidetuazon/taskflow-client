@@ -43,7 +43,6 @@ const styles: {[key: string]: React.CSSProperties} = {
         padding: '0px 20px',
         flex: 1,
         justifyContent: 'space-between',
-        minHeight: '50px',
     },
     topbarRight: {
         paddingLeft: 20,

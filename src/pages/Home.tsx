@@ -44,10 +44,6 @@ export default function Home() {
         init();
     }, []);
 
-    // useEffect(() => {
-    //     console.log(project);
-    // }, [project]);
-
     const applyFilter = () => {
         const currIdx = fitlerCycle.indexOf(filterState);
         const nextIdx = (currIdx + 1) % fitlerCycle.length;
@@ -102,6 +98,7 @@ const styles: {[key: string]: React.CSSProperties} = {
         flexDirection: 'column',
         alignItems: 'center',
         width: '100%',
+        position: 'absolute'
         // height: '100%',
         // overflow: 'auto',
     },

@@ -1,14 +1,16 @@
 import React, { useEffect, useState } from "react";
 import colors from "../constants/colors";
 import typography from "../constants/typography";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "../providers/AuthProvider";
+import deleteIcon from '../assets/icons/delete.svg';
 
 import TopBar from "../components/home/topbar/TopBar";
 import Text from "../components/commons/Text";
-import { getTask } from "../services/api";
+import { deleteTask, getTask } from "../services/api";
 import Task from "../components/task/TaskForm";
 import TaskLogs from "../components/task/TaskLogs";
+import toast from "react-hot-toast";
 
 type Props = {
     style?: React.CSSProperties,
@@ -17,6 +19,7 @@ type Props = {
 export default function ProjectTask(props: Props) {
     const { user } = useAuth();
     const { username, slug, id } = useParams();
+    const navigate = useNavigate();
 
     const [task, setTask] = useState<any>({});
     const [isHovered, setIsHovered] = useState<string | null>(null);
@@ -31,13 +34,25 @@ export default function ProjectTask(props: Props) {
         }
     }
 
+    const onDelete = async () => {
+        if (!username || !slug || !id) return;
+        
+        toast.promise(
+            deleteTask(username, slug, id)
+            .then(response => {
+                console.log(response);
+                navigate(-1);
+            }) , {
+                loading: 'Deleting task...',
+                success: 'Task deleted successfully!',
+                error: 'Failed to delete task. Please try again.'
+            }
+        )
+    }
+
     useEffect(() => {
         init();
     }, [username, slug, id]);
-
-    // useEffect(() => {
-    //     console.log(task);
-    // }, [task]);
 
     return (
         <div style={styles.root}>
@@ -98,6 +113,26 @@ export default function ProjectTask(props: Props) {
                                         {task.dueDate?.split('T')[0]}
                                     </Text>
                                 </div>
+                            </div>
+                            <div
+                                style={{                        
+                                    borderRadius: '8px',
+                                    backgroundColor: isHovered === 'delete' ? colors.darkBorder : colors.surface,
+                                    cursor: 'pointer'
+                                }}
+                                onMouseEnter={() => setIsHovered('delete')}
+                                onMouseLeave={() => setIsHovered(null)}
+                                onClick={() => onDelete()}
+                            >
+                                <img
+                                    src={deleteIcon}
+                                    style={{
+                                        height: 20,
+                                        paddingTop: 5,
+                                        paddingLeft: 4,
+                                        paddingRight: 4,
+                                    }}
+                                />
                             </div>
                         </div>
                         <Task 
@@ -191,6 +226,7 @@ const styles: {[key: string]: React.CSSProperties} = {
         display: 'flex',
         flexDirection: 'row',
         gap: 20,
+        alignItems: 'center',
     },
     buttons: {
         padding: '3px 10px',

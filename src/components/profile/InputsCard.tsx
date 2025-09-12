@@ -9,12 +9,18 @@ import { useAuth } from "../../providers/AuthProvider";
 
 import Button from "../commons/Button";
 import Text from "../commons/Text";
+import TextInput from "../commons/TextInputs";
+import PublicProfile from "./PublicProfile";
 
+type Props = {
+    style?: React.CSSProperties,
+    active: any;
+}
 
-export default function InputsCard() {
+export default function InputsCard(props: Props) {
     const isBigScreen = useMediaQuery({ minWidth: 768});
     const navigate = useNavigate();
-    const { setUser } = useAuth();
+    const { user, setUser } = useAuth();
     const [isHovered, setIsHovered] = useState<boolean>(false);
 
     const handleOnSignOut = () => {
@@ -26,11 +32,13 @@ export default function InputsCard() {
     return (
         <div style={styles.container}>
             <div style={styles.body}>
-                <Text variant="title" textStyle={{ color: colors.textSecondary}}>
-                    This section will get an update soon... Hang tight! :D
-                    <br />
-                    If you'd want to sign out, click the button below.
-                </Text>
+                { props.active === 'profile' ? (
+                    <PublicProfile />
+                ) : (
+                    <div>
+                        mount account settings component
+                    </div>
+                )}
             </div>
             <div style={styles.footer}>
                 <Button
@@ -68,6 +76,7 @@ const styles: {[key: string]: React.CSSProperties} = {
         flex: 1,
         justifyContent: 'center',
         textAlign: 'center',
+        width: '100%',
     },
     footer: {
         borderTop: `1px solid ${colors.darkBorder}`,

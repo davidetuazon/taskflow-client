@@ -4,12 +4,20 @@ import typography from "../../constants/typography";
 
 import Button from "../commons/Button";
 import { useMediaQuery } from "react-responsive";
+import { useNavigate, useParams } from "react-router-dom";
 
 type settingOptions = 'profile' | 'account';
 
-export default function LeftCard() {
+type Props = {
+    style?: React.CSSProperties;
+    user: any,
+    active: any,
+    setActive: React.Dispatch<React.SetStateAction<settingOptions>>,
+}
+
+export default function LeftCard(props: Props) {
     const isBigScreen = useMediaQuery({ minWidth: 768 });
-    const [active, setActive] = useState<settingOptions>('profile');
+    const navigate = useNavigate();
 
     return (
         <div style={styles.container}>
@@ -17,7 +25,7 @@ export default function LeftCard() {
                 title="Public profile"
                 style={{
                     ...styles.category,
-                    border: active === 'profile' ?
+                    border: props.active === 'profile' ?
                     `2px solid ${colors.textSecondary}` :
                     `2px solid ${colors.darkBorder}`
                 }}
@@ -26,14 +34,15 @@ export default function LeftCard() {
                     fontSize: isBigScreen ? typography.subtitle : typography.caption
                 }}
                 onButtonPress={() => {
-                    setActive('profile');
+                    props.setActive('profile');
+                    navigate(`/${props.user?.username}/account/profile`, { replace: true });
                 }}
             />
             <Button
                 title="Account"
                 style={{
                     ...styles.category,
-                    border: active === 'account' ?
+                    border: props.active === 'account' ?
                     `2px solid ${colors.textSecondary}` :
                     `2px solid ${colors.darkBorder}`
                 }}
@@ -42,7 +51,8 @@ export default function LeftCard() {
                     fontSize: isBigScreen ? typography.subtitle : typography.caption  
                 }}
                 onButtonPress={() => {
-                    setActive('account');
+                    props.setActive('account');
+                    navigate(`/${props.user?.username}/account/admin`, { replace: true });
                 }}
             />
         </div>

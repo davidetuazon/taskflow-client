@@ -5,12 +5,12 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import { mustNotBeEmptyOrSpace } from "../../utils/validators";
 import { useParams } from "react-router-dom";
 import { toast } from "react-hot-toast";
+import { updateTask } from "../../services/api";
 
 import Text from "../commons/Text";
 import TextInput from "../commons/TextInputs";
 import Select from "../commons/Select";
 import Button from "../commons/Button";
-import { updateTask } from "../../services/api";
 
 type Props = {
     style?: React.CSSProperties,
@@ -31,7 +31,7 @@ export default function TaskForm(props: Props) {
     const { username, slug, id } = useParams();
     const statusOptions: StatusOption[] = ['open', 'in-progress', 'in-review', 'done'];
     const [isHovered, setIsHovered] = useState<boolean>(false);
-    const { register, handleSubmit, watch, reset, setValue, setError, formState: { errors, isSubmitting } } = useForm<Inputs>({
+    const { register, handleSubmit, watch, reset, setValue, formState: { errors, isDirty } } = useForm<Inputs>({
         defaultValues: {
            title: props.task.title,
            status: props.task.status,
@@ -53,7 +53,8 @@ export default function TaskForm(props: Props) {
             dueDate: data.dueDate || props.task.dueDate?.split('T')[0],
             description: data.description || props.task.description,
         }
-        console.log({payload});
+        console.log();
+
         toast.promise(
             updateTask(username, slug, id, payload)
             .then((response) => {
@@ -66,10 +67,6 @@ export default function TaskForm(props: Props) {
             }
         )
     }
-
-    // useEffect(() => {
-    //     console.log(username, slug, id);
-    // }, [username, slug, id]);
 
     useEffect(() => {
         if (props.task) {
@@ -113,12 +110,12 @@ export default function TaskForm(props: Props) {
                     Task status:
                 </Text>
                 <Select
-                    label="current"
+                    label="current status"
                     options={statusOptions.map((opt: string) => (
                         { value: opt, label: opt }
                     ))}
                     value={watch('status') || props.task.status}
-                    onSelect={(val) => setValue('status', val)}
+                    onSelect={(val) => setValue('status', val, {shouldDirty: true})}
                     error = {errors.status?.message}
                 />
                 <Text
@@ -155,10 +152,12 @@ export default function TaskForm(props: Props) {
                         style={{
                             ...styles.button,
                             backgroundColor: isHovered ? colors.primaryLight : colors.primary,
+                            opacity: isDirty ? 1 : 0.8,
                         }}
                         onMouseEnter={() => setIsHovered(true)}
                         onMouseLeave={() => setIsHovered(false)}
                         onButtonPress={handleSubmit(onSubmit)}
+                        disabled={!isDirty}
                     />
                 </div>
             </form>

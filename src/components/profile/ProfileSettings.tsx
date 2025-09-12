@@ -9,9 +9,12 @@ import LeftCard from "./LeftCard";
 import InputsCard from "./InputsCard";
 import { useMediaQuery } from "react-responsive";
 
+type settingOptions = 'profile' | 'account';
+
 export default function ProfileSettings() {
     const isBigScreen = useMediaQuery({ minWidth: 768 });
     const { user } = useAuth();
+    const [active, setActive] = useState<settingOptions>('profile');
 
     return (
         <div style={isBigScreen ? styles.container : styles.smallContainer}>
@@ -20,13 +23,13 @@ export default function ProfileSettings() {
                         variant="title"
                         style={{ margin: 5 }}
                     >
-                        {user?.fullName}
+                        {user?.firstName} {user?.lastName}
                     </Text>
                     <p style={styles.p}>Your personal account</p>
             </div>
             <div style={isBigScreen ? styles.mainCard : styles.smallMainCard}>
-                <LeftCard />
-                <InputsCard />
+                <LeftCard user={user} active={active} setActive={setActive} />
+                <InputsCard active={active} />
             </div>
         </div>
     );

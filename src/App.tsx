@@ -51,7 +51,15 @@ function App() {
             }
           />
           <Route
-            path='/:username/account/settings'
+            path='/:username/account/profile'
+            element={
+              <RequireAuth>
+                <Account />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path='/:username/account/admin'
             element={
               <RequireAuth>
                 <Account />
@@ -79,42 +87,6 @@ function App() {
             element={
               <RequireAuth>
                 <ProjectTask/>
-              </RequireAuth>
-            }
-          />
-
-
-
-
-          <Route
-            path='/tasks/:id/done'
-            element={
-              <RequireAuth>
-                <Home />
-              </RequireAuth>
-            }
-            />
-          <Route
-            path='/tasks/:id/edit'
-            element={
-              <RequireAuth>
-                <Home />
-              </RequireAuth>
-            }
-          />
-          <Route
-            path='/tasks/:id/delete'
-            element={
-              <RequireAuth>
-                <Home />
-              </RequireAuth>
-            }
-          />
-          <Route
-            path='/tasks/create'
-            element={
-              <RequireAuth>
-                <Home />
               </RequireAuth>
             }
           />

@@ -28,10 +28,6 @@ export default function TaskLogs(props: Props) {
         init();
     }, []);
 
-    // useEffect(() => {
-    //     console.log(logs);
-    // }, [logs]);
-
     return (
         <>
             {logs.length !== 0 ? (
@@ -57,13 +53,7 @@ export default function TaskLogs(props: Props) {
                             variant="caption"
                             style={styles.text}
                         >
-                            {log.details}
-                        </Text>
-                        <Text
-                            variant="caption"
-                            style={styles.text}
-                        >
-                           by: {log.by?.fullName}
+                            {log.by?.fullName} :&nbsp;&nbsp;{log.details}
                         </Text>
                     </div>
                 ))} 
@@ -100,6 +90,7 @@ const styles: {[key: string]: React.CSSProperties} = {
         // border: '1px solid red',
         margin: 0,
         color: colors.textSecondary,
+        padding : '5px 0px',
     },
     span: {
         color: colors.textSecondary,
