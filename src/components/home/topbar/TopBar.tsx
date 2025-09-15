@@ -51,6 +51,6 @@ const styles: {[key: string]: React.CSSProperties} = {
         justifyContent: 'space-between',
     },
     topbarRight: {
-        // paddingLeft: 0,
+        width: '10%',
     }
 }

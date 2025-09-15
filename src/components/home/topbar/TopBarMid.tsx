@@ -87,6 +87,7 @@ const styles: {[key: string]: React.CSSProperties} = {
         position: 'relative',
         padding: '0 20px',
         margin: 0,
+        width: 'auto',
     },
     searchbar: {
         border: `1px solid ${colors.darkBorder}`,
