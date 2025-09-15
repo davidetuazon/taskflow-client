@@ -48,7 +48,7 @@ export default function Project() {
             const { slug } = newProject;
             toast.success("Project created succesfully");
             setTimeout(() => {
-                navigate(`${username}/projects/${slug}/tasks`);
+                navigate(`/${username}/${slug}/tasks`);
             }, 800)
         } catch (e: any) {
             if (e.message.includes('already exists')) {
