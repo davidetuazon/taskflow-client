@@ -65,7 +65,7 @@ const styles: {[key: string]: React.CSSProperties} = {
     },
     smallLink: {
          // border: '1px solid white',
-        height: 22,
+        height: 20,
         cursor: 'pointer',
     }
 }
