@@ -91,7 +91,7 @@ const styles: {[key: string]: React.CSSProperties} = {
         flexDirection: 'row',
         justifyContent: 'space-evenly',
         height: 'auto',
-        margin: '20px 10px',
+        margin: '20px 0px',
         gap: 5
     },
     feed: {

@@ -11,12 +11,14 @@ import { deleteTask, getTask } from "../services/api";
 import Task from "../components/task/TaskForm";
 import TaskLogs from "../components/task/TaskLogs";
 import toast from "react-hot-toast";
+import { useMediaQuery } from "react-responsive";
 
 type Props = {
     style?: React.CSSProperties,
 }
 
 export default function ProjectTask(props: Props) {
+    const isBigScreen = useMediaQuery({ minWidth: 768 });
     const { user } = useAuth();
     const { username, slug, id } = useParams();
     const navigate = useNavigate();
@@ -41,7 +43,7 @@ export default function ProjectTask(props: Props) {
             deleteTask(username, slug, id)
             .then(response => {
                 console.log(response);
-                navigate(-1);
+                navigate(`/${username}/${slug}/tasks`);
             }) , {
                 loading: 'Deleting task...',
                 success: 'Task deleted successfully!',
@@ -79,44 +81,57 @@ export default function ProjectTask(props: Props) {
                        &nbsp;/&nbsp;{task.title}
                     </Text>
                 </div>
-                <div style={styles.main}>
+                <div style={isBigScreen ? styles.main : styles.mainSmall}>
                     <div style={styles.mainSection}>
                         <div style={styles.mainHeader}>
-                            <div style={styles.statusDue}>
-                                <Text
-                                    variant="subtitle"
-                                    style={styles.text}
-                                >
-                                    Current status:
-                                </Text>
-                                <div style={styles.buttons}>
-                                    <Text
-                                        variant="subtitle"
-                                        style={styles.text}
-                                    >
-                                        {task.status}
-                                    </Text>
+                            <div
+                                style={{
+                                    display: 'flex',
+                                    flexDirection: 'row', 
+                                    gap: 10,
+                                }}
+                            >
+                                <div style={styles.statusDue}>
+                                    {isBigScreen && (
+                                        <Text
+                                            variant="subtitle"
+                                            style={styles.text}
+                                        >
+                                            Current status:
+                                        </Text>
+                                    )}
+                                    <div style={styles.buttons}>
+                                        <Text
+                                            variant="subtitle"
+                                            style={styles.text}
+                                        >
+                                            {task.status}
+                                        </Text>
+                                    </div>
                                 </div>
-                            </div>
-                            <div style={styles.statusDue}>
-                                <Text
-                                    variant="subtitle"
-                                    style={styles.text}
-                                >
-                                    Due date:
-                                </Text>
-                                <div style={styles.buttons}>
-                                    <Text
-                                        variant="subtitle"
-                                        style={styles.text}
-                                    >
-                                        {task.dueDate?.split('T')[0]}
-                                    </Text>
+                                <div style={styles.statusDue}>
+                                    {isBigScreen && (
+                                        <Text
+                                            variant="subtitle"
+                                            style={styles.text}
+                                        >
+                                            Due date:
+                                        </Text>
+                                    )}
+                                    <div style={styles.buttons}>
+                                        <Text
+                                            variant="subtitle"
+                                            style={styles.text}
+                                        >
+                                            {task.dueDate?.split('T')[0]}
+                                        </Text>
+                                    </div>
                                 </div>
                             </div>
                             <div
                                 style={{                        
                                     borderRadius: '8px',
+                                    border: `1px solid ${colors.darkBorder}`,
                                     backgroundColor: isHovered === 'delete' ? colors.darkBorder : colors.surface,
                                     cursor: 'pointer'
                                 }}
@@ -140,7 +155,7 @@ export default function ProjectTask(props: Props) {
                             setTask={setTask}
                         />
                     </div>
-                    <div style={styles.sideSection}>
+                    <div style={isBigScreen ? styles.sideSection : styles.sideSectionSmall}>
                         <div style={styles.sideHeader}>
                             <Text
                                 variant="subtitle"
@@ -207,6 +222,16 @@ const styles: {[key: string]: React.CSSProperties} = {
         flex: 1,
         gap: 25,
     },
+    mainSmall: {
+        // border: '1px solid red',
+        paddingTop: 20,
+        paddingBottom: 20,
+        display: 'flex',
+        flexDirection: 'column',
+        // justifyContent: 'center',
+        flex: 1,
+        gap: 25,
+    },
     statusDue: {
         // border: '1px solid red',
         display: 'flex',
@@ -225,7 +250,7 @@ const styles: {[key: string]: React.CSSProperties} = {
         // border: '1px solid red',
         display: 'flex',
         flexDirection: 'row',
-        gap: 20,
+        justifyContent: 'space-between',
         alignItems: 'center',
     },
     buttons: {
@@ -246,6 +271,12 @@ const styles: {[key: string]: React.CSSProperties} = {
         display: 'flex',
         flexDirection: 'column',
         width: '45%',
+        // padding: 10,
+    },
+    sideSectionSmall: {
+        // border: '1px solid red',
+        display: 'flex',
+        flexDirection: 'column',
         // padding: 10,
     },
     sideHeader: {

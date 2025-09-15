@@ -19,11 +19,11 @@ export default function TopBarLeft(props: Props) {
 
     return (
         <div style={ Object.assign({}, styles.container, props.style) }>
-            <div>
+            {/* <div>
                 {!isBigScreen && (
                     <img src={sidebar} style={isBigScreen ? styles.sidebar : styles.smallSidebar} />
                 )}
-            </div>
+            </div> */}
             <div
                style={{
                     ...styles.dashboard,

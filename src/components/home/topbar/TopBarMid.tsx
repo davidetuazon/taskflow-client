@@ -37,7 +37,7 @@ export default function TopBarMid(props: Props) {
 
     return (
         <div style={ Object.assign({}, styles.container, props.style) }>
-            {isBigScreen && (
+            {/* {isBigScreen && ( */}
                 <TextInput
                     style={isBigScreen ? styles.searchbar : styles.searchbarIcon}
                     textProps={{
@@ -47,7 +47,7 @@ export default function TopBarMid(props: Props) {
                     }}
                     textStyle={{ fontSize: isBigScreen ? typography.subtitle : typography.caption }}
                 />
-            )}
+            {/* )} */}
             {(results?.length ?? 0) > 0 && (
                 <div style={styles.dropdown}>
                     {results.map((proj:any, idx: number) => (
@@ -95,6 +95,8 @@ const styles: {[key: string]: React.CSSProperties} = {
     },
     searchbarIcon: {
         border: `1px solid ${colors.darkBorder}`,
+        height: 30,
+        borderRadius: '8px',
     },
     dropdown: {
         position: 'absolute',

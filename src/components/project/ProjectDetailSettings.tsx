@@ -5,13 +5,13 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
 import { mustBeValidProjectName, mustNotBeEmptyOrSpace } from "../../utils/validators";
 import { toast } from "react-hot-toast";
+import deleteIcon from '../../assets/icons/delete.svg';
+import { updateProject } from "../../services/api";
+import { useMediaQuery } from "react-responsive";
 
 import Text from "../commons/Text";
 import TextInput from "../commons/TextInputs";
-
 import Button from "../commons/Button";
-import { updateProject } from "../../services/api";
-
 
 type Props = {
     style?: React.CSSProperties,
@@ -28,11 +28,12 @@ type Inputs = {
 }
 
 export default function ProjectDetailSettings(props: Props) {
+    const isBigScreen = useMediaQuery({ minWidth: 768 });
     const { slug } = useParams();
     const navigate = useNavigate();
     const [isVisible, setIsVisible] = useState<boolean>(false);
     const [isHovered, setIsHovered] = useState<string | null>(null);
-    const { register, handleSubmit, trigger, watch, reset, setError, formState: { errors, isSubmitting } } = useForm<Inputs>({
+    const { register, handleSubmit, trigger, watch, reset, setError, formState: { errors, isDirty, isSubmitting } } = useForm<Inputs>({
         defaultValues: {
             title: props.project.slug,
             description: props.project.description,
@@ -88,6 +89,7 @@ export default function ProjectDetailSettings(props: Props) {
             style={{
                 ...styles.container,
                 ...(isVisible ? styles.containerVisible : {}),
+                width: isBigScreen ? '50%' : '80%'
                 }}
                 onClick={(e) => e.stopPropagation()}
             >
@@ -100,6 +102,25 @@ export default function ProjectDetailSettings(props: Props) {
                 >
                     Edit project details
                 </Text>
+                <div
+                    style={{
+                        cursor: 'pointer',
+                        borderRadius: '8px',
+                        backgroundColor: isHovered === 'delete' ? colors.surface : colors.background,
+                    }}
+                    onMouseEnter={() => setIsHovered('delete')}
+                    onMouseLeave={() => setIsHovered(null)}
+                >
+                    <img
+                        style={{
+                            height: 20,
+                            paddingTop: 5,
+                            paddingLeft: 4,
+                            paddingRight: 4,
+                        }}
+                        src={deleteIcon}
+                    />
+                </div>
             </div>
             <form style={styles.form}>
                 <div
@@ -167,11 +188,12 @@ export default function ProjectDetailSettings(props: Props) {
                             style={{
                                 ...styles.updateBtn,
                                 backgroundColor: isHovered === 'update' ? colors.primaryLight : colors.primary,
+                                opacity: isDirty ? 1 : 0.8,
                             }}
                             onMouseEnter={() => setIsHovered('update')}
                             onMouseLeave={() => setIsHovered(null)}
                             onButtonPress={handleSubmit(onSubmit)}
-                            disabled={isSubmitting}
+                            disabled={!isDirty}
                         />
                     </div>
                 </div>
@@ -186,7 +208,6 @@ const styles: { [key: string]: React.CSSProperties } = {
         borderRadius: "8px",
         backgroundColor: colors.surface,
         height: 'auto',
-        minWidth: '50%',
         opacity: 0,
         transform: "scale(0.95)",
         transition: "transform 0.4s ease, opacity 0.4s ease",
@@ -201,6 +222,10 @@ const styles: { [key: string]: React.CSSProperties } = {
         backgroundColor: colors.background,
         borderTopLeftRadius: '8px',
         borderTopRightRadius: '8px',
+        display: 'flex',
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
     },
     form: {
         // border: '1px solid red',

@@ -5,6 +5,7 @@ import settings from '../../assets/icons/settings.svg';
 
 import Text from "../commons/Text";
 import ProjectDetailSettings from "./ProjectDetailSettings";
+import { useMediaQuery } from "react-responsive";
 
 type Props = {
     style?: React.CSSProperties,
@@ -15,9 +16,10 @@ type Props = {
 
 export default function ProjectDetail(props: Props) {
     const [isHovered, setIsHovered] = useState<boolean>(false);
+    const isBigScreen = useMediaQuery({ minWidth: 768 });
 
     return (
-        <div style={styles.container}>
+        <div style={isBigScreen ? styles.container : styles.containerSmall}>
             <div style={styles.header}>
                 <Text
                     variant="subtitle"
@@ -65,6 +67,14 @@ const styles: {[key: string]: React.CSSProperties} = {
         paddingBottom: 20,
         display: 'flex',
         flexDirection: 'column',
+    },
+    containerSmall: {
+        // border: '1px solid red',
+        borderBottom: `1px solid ${colors.darkBorder}`,
+        paddingBottom: 20,
+        display: 'flex',
+        flexDirection: 'column',
+        marginBottom: 20,
     },
     header: {
         // border: '1px solid red',

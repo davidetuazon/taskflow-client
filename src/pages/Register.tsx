@@ -1,6 +1,5 @@
-import React, { useCallback } from "react";
+import React from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
-import { throttle } from "lodash";
 import { useNavigate } from "react-router-dom";
 import colors from "../constants/colors";
 import { mustBeValidEmail, mustNotBeEmptyOrSpace } from "../utils/validators";
@@ -13,7 +12,7 @@ import Button from "../components/commons/Button";
 import Container from "../components/commons/Container";
 
 type Inputs = {
-    fullName: string,
+    username: string,
     firstName: string,
     lastName: string,
     email: string,
@@ -27,13 +26,13 @@ export default function Register() {
 
     const onSubmit: SubmitHandler<Inputs> = async (data) => {
         const payload: {
-            fullName: string,
+            username: string,
             firstName: string,
             lastName: string,
             email: string,
             password: string,
         } = {
-            fullName: `${data.firstName} ${data.lastName}`,
+            username: data.username,
             firstName: data.firstName,
             lastName: data.lastName,
             email: data.email,
@@ -71,7 +70,18 @@ export default function Register() {
                     Create a new Account
                 </Text>
                 <form style={styles.form}>
-
+                    <TextInput
+                        style={styles.fields}
+                        textProps={{
+                            placeholder: 'Username',
+                            ...register("username", {
+                                validate: {
+                                    mustNotBeEmptyOrSpace
+                                },
+                            }),
+                        }}
+                        error = {errors.username?.message}
+                    />
                     <TextInput
                         style={styles.fields}
                         textProps={{

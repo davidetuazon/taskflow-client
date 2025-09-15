@@ -51,5 +51,6 @@ const styles: {[key: string]: React.CSSProperties} = {
         border: `2px solid ${colors.primary}`,
         padding: 10,
         margin: 0,
+        width: '70px',
     }
 }

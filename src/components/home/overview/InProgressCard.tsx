@@ -49,6 +49,7 @@ const styles: {[key: string]: React.CSSProperties} = {
     container: {
         border: `2px solid ${colors.secondary}`,
         padding: 10,
-        margin: 0, 
+        margin: 0,
+        width: '70px',
     }
 }

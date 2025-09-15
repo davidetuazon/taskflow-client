@@ -1,21 +1,23 @@
 import React, { useEffect, useState } from "react";
 import colors from "../constants/colors";
+import { useAuth } from "../providers/AuthProvider";
+import { useMediaQuery } from "react-responsive";
+import { Link, useParams } from "react-router-dom";
+import { getProject, listTask } from "../services/api";
 
 import TopBar from "../components/home/topbar/TopBar";
 import Text from "../components/commons/Text";
-import { Link, useParams } from "react-router-dom";
-import { getProject, listTask } from "../services/api";
 import ProjectDetail from "../components/project/ProjectDetail";
 import TaskList from "../components/project/TaskList";
 import TaskListOptions from "../components/project/TaskListOptions";
 import TaskCreateForm from "../components/project/TaskCreateForm";
 import ProjectDetailSettings from "../components/project/ProjectDetailSettings";
-import { useAuth } from "../providers/AuthProvider";
 
 type filterOption = 'default' | 'overdue' | 'today' | 'upcoming' | 'in-progress' | 'in-review';
 type sortOption = 'default' | 'ascending' | 'descending';
 
 export default function ProjectTasks() {
+    const isBigScreen = useMediaQuery({ minWidth: 768 });
     const { user } = useAuth();
     const { username, slug } = useParams();
     const [project, setProject] = useState<any>({});
@@ -72,7 +74,6 @@ export default function ProjectTasks() {
                     >
                         <Link
                             to={`/${username}/${project.slug}/tasks`}
-                            // onClick={() => init()}
                             style={{
                                 color: colors.textPrimary,
                                 textDecoration: isHovered === project.slug ? 'underline' : 'none',
@@ -84,8 +85,15 @@ export default function ProjectTasks() {
                         </Link>
                     </Text>
                 </div>
-                <div style={styles.main}>
+                <div style={isBigScreen ? styles.main : styles.mainSmall}>
                     <div style={styles.mainSection}>
+                        {!isBigScreen && (
+                            <ProjectDetail
+                                project={project}
+                                isOpen={isOpen}
+                                setIsOpen={setIsOpen}
+                            />
+                        )}
                         <TaskListOptions
                             task={task}
                             filterState={filterState}
@@ -100,12 +108,14 @@ export default function ProjectTasks() {
                             task={task}
                         />
                     </div>
-                    <div style={styles.sideSection}>
-                        <ProjectDetail
-                            project={project}
-                            isOpen={isOpen}
-                            setIsOpen={setIsOpen}
-                        />
+                    <div style={isBigScreen ? styles.sideSection : styles.sideSectionSmall}>
+                        {isBigScreen && (
+                            <ProjectDetail
+                                project={project}
+                                isOpen={isOpen}
+                                setIsOpen={setIsOpen}
+                            />
+                        )}
                         <TaskCreateForm
                             username={username}
                             project={project}
@@ -186,6 +196,15 @@ const styles: {[key: string]: React.CSSProperties} = {
         flex: 1,
         gap: 25,
     },
+    mainSmall: {
+        // border: '1px solid red',
+        paddingTop: 20,
+        paddingBottom: 20,
+        display: 'flex',
+        flexDirection: 'column',
+        flex: 1,
+        gap: 25,
+    },
     mainSection: {
         //  border: '1px solid red',
         display: 'flex',
@@ -198,6 +217,13 @@ const styles: {[key: string]: React.CSSProperties} = {
         display: 'flex',
         flexDirection: 'column',
         width: '45%',
+        // padding: 10,
+    },
+    sideSectionSmall: {
+        // border: '1px solid red',
+        display: 'flex',
+        flexDirection: 'column',
+        // width: '45%',
         // padding: 10,
     },
     overlay: {
