@@ -8,6 +8,7 @@ import Text from "../commons/Text";
 
 type Props = {
     style?: React.CSSProperties,
+    logsUpdated: any,
 }
 
 export default function TaskLogs(props: Props) {
@@ -26,7 +27,8 @@ export default function TaskLogs(props: Props) {
 
     useEffect(() => {
         init();
-    }, []);
+    }, [props.logsUpdated]);
+
 
     return (
         <>

@@ -16,6 +16,7 @@ type Props = {
     style?: React.CSSProperties,
     task: any,
     setTask: React.Dispatch<React.SetStateAction<any>>,
+    setLogsUpdated: React.Dispatch<React.SetStateAction<any>>,
 }
 
 type Inputs = {
@@ -53,12 +54,12 @@ export default function TaskForm(props: Props) {
             dueDate: data.dueDate || props.task.dueDate?.split('T')[0],
             description: data.description || props.task.description,
         }
-        console.log();
-
+        // console.log(payload);
         toast.promise(
             updateTask(username, slug, id, payload)
             .then((response) => {
                 props.setTask(response);
+                props.setLogsUpdated(prev => prev + 1);
                 reset();
             }), {
                 loading: 'Updating task...',

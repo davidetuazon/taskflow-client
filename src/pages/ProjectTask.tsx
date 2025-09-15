@@ -8,7 +8,7 @@ import deleteIcon from '../assets/icons/delete.svg';
 import TopBar from "../components/home/topbar/TopBar";
 import Text from "../components/commons/Text";
 import { deleteTask, getTask } from "../services/api";
-import Task from "../components/task/TaskForm";
+import TaskForm from "../components/task/TaskForm";
 import TaskLogs from "../components/task/TaskLogs";
 import toast from "react-hot-toast";
 import { useMediaQuery } from "react-responsive";
@@ -24,6 +24,7 @@ export default function ProjectTask(props: Props) {
     const navigate = useNavigate();
 
     const [task, setTask] = useState<any>({});
+    const [logsUpdated, setLogsUpdated] = useState(0);
     const [isHovered, setIsHovered] = useState<string | null>(null);
 
     const init = async () => {
@@ -150,9 +151,10 @@ export default function ProjectTask(props: Props) {
                                 />
                             </div>
                         </div>
-                        <Task 
+                        <TaskForm 
                             task={task}
                             setTask={setTask}
+                            setLogsUpdated={setLogsUpdated}
                         />
                     </div>
                     <div style={isBigScreen ? styles.sideSection : styles.sideSectionSmall}>
@@ -164,7 +166,9 @@ export default function ProjectTask(props: Props) {
                                 Task activity logs
                             </Text>
                         </div>
-                        <TaskLogs />
+                        <TaskLogs
+                            logsUpdated={logsUpdated}
+                        />
                     </div>
                 </div>
             </div>

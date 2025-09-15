@@ -63,9 +63,10 @@ export default function ProjectDetailSettings(props: Props) {
             const res = await updateProject(props.username, slug, payload);
             props.setProject(res);
             reset();
+            toast.success("Project updated successfully!");
+            props.onClose();
+
             if (res.slug && res.slug !== slug) {
-                toast.success("Project updated successfully!");
-                props.onClose();
                 setTimeout(() => {
                     navigate(`/${props.username}/${res.slug}/tasks`)
                 }, 400);
